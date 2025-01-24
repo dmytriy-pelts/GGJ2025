@@ -17,8 +17,8 @@ namespace GumFly.ScriptableObjects
         public int Radius { get; private set; } = 50;
 
         [field: SerializeField]
-        [field: Tooltip("The base speed of this gum.")]
-        public float Speed { get; private set; } = 1.0f;
+        [field: Tooltip("The base velocity of this gum.")]
+        public float Velocity { get; private set; } = 10.0f;
         
         [field: SerializeField]
         public Color Color { get; private set; }

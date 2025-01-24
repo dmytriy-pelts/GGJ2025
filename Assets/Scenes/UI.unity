@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 528040289}
   - component: {fileID: 528040291}
   - component: {fileID: 528040290}
+  - component: {fileID: 528040292}
   m_Layer: 5
   m_Name: Gums
   m_TagString: Untagged
@@ -197,6 +198,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528040288}
   m_CullTransparentMesh: 1
+--- !u!114 &528040292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528040288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e661f1dfdcf4ec18a4e47709600da3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &611123085
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,6 +221,7 @@ GameObject:
   - component: {fileID: 611123086}
   - component: {fileID: 611123088}
   - component: {fileID: 611123087}
+  - component: {fileID: 611123089}
   m_Layer: 5
   m_Name: Gases
   m_TagString: Untagged
@@ -272,6 +286,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611123085}
   m_CullTransparentMesh: 1
+--- !u!114 &611123089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611123085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caf19482ced0432f80341cee7f86f095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &974564427
 GameObject:
   m_ObjectHideFlags: 0
