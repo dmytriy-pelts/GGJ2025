@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.Pool;
+using UnityEngine.SceneManagement;
 
 namespace GumFly.Utils
 {
@@ -15,13 +17,33 @@ namespace GumFly.Utils
                     return _instance;
                 }
 
-                _instance = Object.FindObjectOfType<T>();
-                if (!_instance)
+                for (int i = 0; i < SceneManager.sceneCount; i++)
                 {
-                    Debug.LogError($"Singleton object not found: {typeof(T).FullName}");
+                    var goList = ListPool<GameObject>.Get();
+                    try
+                    {
+                        var scene = SceneManager.GetSceneAt(i);
+                        if (scene.isLoaded)
+                        {
+                            scene.GetRootGameObjects(goList);
+                            foreach (var go in goList)
+                            {
+                                _instance = go.GetComponentInChildren<T>();
+                                if (_instance)
+                                {
+                                    return _instance;
+                                }
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        ListPool<GameObject>.Release(goList);
+                    }
                 }
-
-                return _instance;
+                
+                Debug.LogError($"Singleton object not found: {typeof(T).FullName}");
+                return null;
             }
         }
     }
