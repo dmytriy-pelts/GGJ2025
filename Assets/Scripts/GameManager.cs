@@ -50,6 +50,8 @@ namespace GumFly
 
             GumManager.Instance.Initialize(_inventoryInstance);
             GasManager.Instance.Initialize(_inventoryInstance);
+
+            GameLoop().Forget();
         }
 
         private void ChangeState(GameState newState)

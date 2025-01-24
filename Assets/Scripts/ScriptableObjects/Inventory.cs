@@ -7,11 +7,11 @@ namespace GumFly.ScriptableObjects
     [CreateAssetMenu(menuName = "Objects/Inventory", fileName = "Inventory", order = 0)]
     public class Inventory : ScriptableObject
     {
-        [SerializeField]
-        GumPackage[] Gums;
+        [field:SerializeField]
+        public GumPackage[] Gums { get; private set; }
         
-        [SerializeField]
-        GasContainer[] Gases;
+        [field:SerializeField]
+        public GasContainer[] Gases { get; private set; }
 
         public bool HasAnyGumsLeft => Gums.Any(it => it.Count > 0);
     }
