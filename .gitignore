@@ -73,5 +73,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .vscode
+.vsconfig
 .idea
 .DS_Store
