@@ -57,6 +57,7 @@ Shoot down flies with different combinations of bubbles.
   - Dodge speed (influenced by weight + speed)
   - Dodge radius
   - Knockback strength (How far away they fly)
+  - Detection range
 - **Fly type ideas:**
   - Simple fly
     - Basic size/stats
