@@ -1,4 +1,5 @@
 ﻿using GumFly.Domain;
+using System.Linq;
 using UnityEngine;
 
 namespace GumFly.ScriptableObjects
@@ -11,5 +12,7 @@ namespace GumFly.ScriptableObjects
         
         [SerializeField]
         GasContainer[] Gases;
+
+        public bool HasAnyGumsLeft => Gums.Any(it => it.Count > 0);
     }
 }

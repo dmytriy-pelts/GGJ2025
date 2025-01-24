@@ -1,4 +1,5 @@
-﻿using GumFly.Domain;
+﻿using Cysharp.Threading.Tasks;
+using GumFly.Domain;
 using GumFly.ScriptableObjects;
 using GumFly.UI;
 using GumFly.Utils;
@@ -57,8 +58,29 @@ namespace GumFly
             StateChanged.Invoke(new StateChange { NewState = newState, OldState = oldState });
         }
 
-        private void GameLoop()
+        private async UniTask GameLoop()
         {
+            while (_inventory.HasAnyGumsLeft)
+            {
+                // 1st step -- pick a gum
+                ChangeState(GameState.PickingGum);
+                var gum = await GumManager.Instance.PickGumAsync();
+                _currentMixture.Gum = gum;
+
+                // 2nd step -- do the rhythm
+                ChangeState(GameState.Chewing);
+                float capacity = await RhyhmManager.Instance.ChewAsync(gum);
+
+                // 3rd step -- gases
+                ChangeState(GameState.PickingGas);
+                await GasManager.Instance.PickGasesAsync(_currentMixture, capacity);
+
+                // 4th step -- aim
+                ChangeState(GameState.Aiming);
+                await AimManager.Instance.ShootAsync();
+            }
+            
+            ChangeState(GameState.Finished);
         }
     }
 }
