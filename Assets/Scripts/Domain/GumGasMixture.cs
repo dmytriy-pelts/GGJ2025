@@ -17,7 +17,7 @@ namespace GumFly.Domain
             get
             {
                 float caps = Capacity;
-                foreach (var amount in _amounts)
+                foreach (var amount in GasAmounts)
                 {
                     caps -= amount.Amount;
                 }
@@ -26,25 +26,25 @@ namespace GumFly.Domain
             }
         }
         
-        private List<GasAndAmount> _amounts = new List<GasAndAmount>();
+        public List<GasAndAmount> GasAmounts = new List<GasAndAmount>();
 
         public void Add(Gas gas, float amount)
         {
-            for (int i = 0; i < _amounts.Count; i++)
+            for (int i = 0; i < GasAmounts.Count; i++)
             {
-                GasAndAmount gasAndAmount = _amounts[i];
+                GasAndAmount gasAndAmount = GasAmounts[i];
                 if (gasAndAmount.Gas == gas)
                 {
                     gasAndAmount.Amount += amount;
-                    _amounts[i] = gasAndAmount;
+                    GasAmounts[i] = gasAndAmount;
                     return;
                 }
             }
 
-            _amounts.Add(new GasAndAmount { Gas = gas, Amount = amount });
+            GasAmounts.Add(new GasAndAmount { Gas = gas, Amount = amount });
         }
 
-        private struct GasAndAmount
+        public struct GasAndAmount
         {
             public Gas Gas;
             public float Amount;
