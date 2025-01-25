@@ -74,7 +74,7 @@ namespace GumFly
 
                 // 2nd step -- do the rhythm
                 ChangeState(GameState.Chewing);
-                float capacity = await RhyhmManager.Instance.ChewAsync(gum);
+                float capacity = await RhythmManager.Instance.ChewAsync(gum);
                 
                 // 3rd step -- aim and load
                 ChangeState(GameState.Aiming);
