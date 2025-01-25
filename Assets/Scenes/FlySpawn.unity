@@ -163,6 +163,8 @@ MonoBehaviour:
   _elevationFrequency: 0
   _anchorPos: {x: 0, y: 0}
   _flightSpeed: 1
+  _previousPos: {x: 0, y: 0}
+  _targetPos: {x: 0, y: 0}
 --- !u!23 &437201465
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -732,7 +734,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7644007919616875017, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
       propertyPath: _flightSpeed
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7644007919616875017, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
       propertyPath: _flightRadius

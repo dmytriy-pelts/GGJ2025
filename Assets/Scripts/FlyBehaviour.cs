@@ -67,7 +67,6 @@ public class FlyBehaviour : MonoBehaviour
         float distanceToTarget = (currentPos - _targetPos).magnitude;
         float distanceAsScale = distanceToTarget / totalLength;
         float speedScale = getSphericalSpeedFromScale01(distanceAsScale);
-        Debug.Log(distanceAsScale + "   " + speedScale);
 
         if (distanceAsScale <= 0.1f)
         {
@@ -84,20 +83,23 @@ public class FlyBehaviour : MonoBehaviour
         }
 
         Vector2 nextPos = _targetPos;
-
         if (!_isEvading)
         {
-            nextPos.y += Mathf.Sin(time * _elevationFrequency) * _maxFlightHeight;
+            float elevation = Mathf.Sin(time * _elevationFrequency) * _maxFlightHeight;
+            nextPos.y += elevation;
         }
 
-        this.transform.position = Vector2.MoveTowards(currentPos, _targetPos, _flightSpeed *  speedScale);
+        this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flightSpeed *  speedScale);
 
         _evasionCooldown -= Time.deltaTime;
     }
 
     private float getSphericalSpeedFromScale01(float scale)
     {
-        return Mathf.Abs(Mathf.Sin(scale * Mathf.PI * 0.5f)) * 0.5f;
+        float result = Mathf.Abs(Mathf.Sin(scale * Mathf.PI)) * 0.5f;
+        result *= 0.8f;
+        result += 0.1f;
+        return result;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
