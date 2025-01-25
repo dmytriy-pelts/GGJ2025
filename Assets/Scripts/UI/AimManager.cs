@@ -8,7 +8,6 @@ namespace GumFly.UI
     {
         public async UniTask ShootAsync(GumGasMixture mixture)
         {
-            
         }
     }
 }

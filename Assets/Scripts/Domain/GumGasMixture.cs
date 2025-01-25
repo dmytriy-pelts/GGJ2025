@@ -6,6 +6,7 @@ namespace GumFly.Domain
 {
     public class GumGasMixture
     {
+        [CanBeNull]
         public Gum Gum;
         private List<GasAndAmount> _amounts = new List<GasAndAmount>();
 

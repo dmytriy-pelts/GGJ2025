@@ -27,16 +27,18 @@ namespace GumFly
     public class GameManager : MonoSingleton<GameManager>
     {
         public GameState State { get; private set; } = GameState.Initializing;
-
-        [SerializeField]
-        private Inventory _inventory;
-
+        
+        /// <summary>
+        /// Gets the current gum-gas mixture. Be aware that the gum might not be selected yet.
+        /// </summary>
+        public GumGasMixture CurrentMixture { get; private set; } = new GumGasMixture();
+        
         [field: SerializeField]
         public UnityEvent<StateChange> StateChanged { get; private set; }
 
-
+        [SerializeField]
+        private Inventory _inventory;
         private Inventory _inventoryInstance;
-        private GumGasMixture _currentMixture = new GumGasMixture();
 
         private void Start()
         {
@@ -57,7 +59,7 @@ namespace GumFly
         private void ChangeState(GameState newState)
         {
             Debug.Log($"New State: {newState}");
-            
+
             GameState oldState = State;
             StateChanged.Invoke(new StateChange { NewState = newState, OldState = oldState });
         }
@@ -69,7 +71,7 @@ namespace GumFly
                 // 1st step -- pick a gum
                 ChangeState(GameState.PickingGum);
                 var gum = await GumManager.Instance.PickGumAsync();
-                _currentMixture.Gum = gum;
+                CurrentMixture.Gum = gum;
 
                 // 2nd step -- do the rhythm
                 ChangeState(GameState.Chewing);
@@ -77,15 +79,14 @@ namespace GumFly
 
                 // 3rd step -- gases
                 ChangeState(GameState.PickingGas);
-                await GasManager.Instance.PickGasesAsync(_currentMixture, capacity);
+                await GasManager.Instance.PickGasesAsync(CurrentMixture, capacity);
 
                 // 4th step -- aim
                 ChangeState(GameState.Aiming);
-                var finalMixture =_currentMixture;
-                _currentMixture = new GumGasMixture();
-                await AimManager.Instance.ShootAsync(finalMixture);
+                await AimManager.Instance.ShootAsync(CurrentMixture);
+                CurrentMixture = new GumGasMixture();
             }
-            
+
             ChangeState(GameState.Finished);
         }
     }
