@@ -1,4 +1,5 @@
-﻿using GumFly.Domain;
+﻿using Cysharp.Threading.Tasks;
+using GumFly.Domain;
 using GumFly.ScriptableObjects;
 using GumFly.UI;
 using GumFly.Utils;
@@ -12,12 +13,11 @@ namespace GumFly
         Initializing,
         PickingGum,
         Chewing,
-        PickingGas,
         Aiming,
         Finished
     }
 
-    public struct StateChange
+    public struct StateChangeEvent
     {
         public GameState NewState;
         public GameState OldState;
@@ -26,16 +26,18 @@ namespace GumFly
     public class GameManager : MonoSingleton<GameManager>
     {
         public GameState State { get; private set; } = GameState.Initializing;
+        
+        /// <summary>
+        /// Gets the current gum-gas mixture. Be aware that the gum might not be selected yet.
+        /// </summary>
+        public GumGasMixture CurrentMixture { get; private set; } = new GumGasMixture();
+        
+        [field: SerializeField]
+        public UnityEvent<StateChangeEvent> StateChanged { get; private set; }
 
         [SerializeField]
         private Inventory _inventory;
-
-        [field: SerializeField]
-        public UnityEvent<StateChange> StateChanged { get; private set; }
-
-
         private Inventory _inventoryInstance;
-        private GumGasMixture _currentMixture = new GumGasMixture();
 
         private void Start()
         {
@@ -49,16 +51,39 @@ namespace GumFly
 
             GumManager.Instance.Initialize(_inventoryInstance);
             GasManager.Instance.Initialize(_inventoryInstance);
+
+            GameLoop().Forget();
         }
 
         private void ChangeState(GameState newState)
         {
+            Debug.Log($"New State: {newState}");
+
             GameState oldState = State;
-            StateChanged.Invoke(new StateChange { NewState = newState, OldState = oldState });
+            StateChanged.Invoke(new StateChangeEvent { NewState = newState, OldState = oldState });
         }
 
-        private void GameLoop()
+        private async UniTask GameLoop()
         {
+            while (_inventory.HasAnyGumsLeft)
+            {
+                // 1st step -- pick a gum
+                ChangeState(GameState.PickingGum);
+                var gum = await GumManager.Instance.PickGumAsync();
+                CurrentMixture.Gum = gum;
+
+                // 2nd step -- do the rhythm
+                ChangeState(GameState.Chewing);
+                float capacity = await RhyhmManager.Instance.ChewAsync(gum);
+                
+                // 3rd step -- aim and load
+                ChangeState(GameState.Aiming);
+                await AimManager.Instance.AimAsync(CurrentMixture);
+                
+                CurrentMixture = new GumGasMixture();
+            }
+
+            ChangeState(GameState.Finished);
         }
     }
 }

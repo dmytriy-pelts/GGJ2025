@@ -1,6 +1,7 @@
 ﻿using GumFly.ScriptableObjects;
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace GumFly.Domain
 {
@@ -8,6 +9,23 @@ namespace GumFly.Domain
     {
         [CanBeNull]
         public Gum Gum;
+
+        public float Capacity;
+
+        public float RemainingCapacity
+        {
+            get
+            {
+                float caps = Capacity;
+                foreach (var amount in _amounts)
+                {
+                    caps -= amount.Amount;
+                }
+
+                return Mathf.Max(0.0f, caps);
+            }
+        }
+        
         private List<GasAndAmount> _amounts = new List<GasAndAmount>();
 
         public void Add(Gas gas, float amount)
