@@ -18,6 +18,8 @@ namespace GumFly.UI
 
         public async UniTask PickGasesAsync(GumGasMixture mixture, float capacity)
         {
+            Debug.Log("PICK GAS");
+            await UniTask.Delay(5000);
         }
     }
 }

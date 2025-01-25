@@ -1,6 +1,10 @@
 ﻿using GumFly.Domain;
+using GumFly.ScriptableObjects;
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace GumFly.UI.Gums
 {
@@ -12,7 +16,23 @@ namespace GumFly.UI.Gums
         [SerializeField]
         private RectTransform _gumContainer;
 
+        [SerializeField]
+        private Button _button;
+        
+        [field:SerializeField]
+        public UnityEvent<Gum> GumPicked { get; private set; }
+
         private GumPackage _package;
+
+        private void OnEnable()
+        {
+            _button.interactable = true;
+        }
+
+        private void OnDisable()
+        {
+            _button.interactable = false;
+        }
 
         public void Initialize(GumPackage package)
         {
@@ -37,6 +57,8 @@ namespace GumFly.UI.Gums
                 _gumContainer.GetChild(_package.Count)
                     .GetComponent<GumBehaviour>()
                     .Consume();
+                
+                GumPicked.Invoke(gum);
             }
         }
     }

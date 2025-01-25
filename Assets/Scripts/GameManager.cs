@@ -56,6 +56,8 @@ namespace GumFly
 
         private void ChangeState(GameState newState)
         {
+            Debug.Log($"New State: {newState}");
+            
             GameState oldState = State;
             StateChanged.Invoke(new StateChange { NewState = newState, OldState = oldState });
         }
