@@ -5,13 +5,13 @@ public class BubbleFlightPath : MonoBehaviour
 {
     [SerializeField]
     private Vector2 _v0;
-    [SerializeField]
+    [SerializeField, Range(0.0f, 1.5f)]
     private float _gravityReversal = 0f;
 
     private const float _angle = 84.0f;
-    private const float _gravity = 9.81f;
-    private const float _totalTime = 10.0f;
-    private const float _reversalForceY = 0f;
+    private const float _gravity = 2.3f;
+    private const float _totalTime = 12.0f;
+    private const float _reversalForceY = 17.0f;
     private const float _gravityChangeConst = 6.936f;
 
     private Vector2 getPostition(float t)
