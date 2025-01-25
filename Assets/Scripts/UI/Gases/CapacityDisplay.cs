@@ -8,10 +8,15 @@ namespace GumFly.UI.Gases
     {
         [SerializeField]
         private Image _image;
-        
+
+        [SerializeField]
+        private Image _remaining;
+
         public void Update()
         {
-            _image.fillAmount = GasManager.Instance.Capacity;
+            _image.fillAmount = GameManager.Instance.CurrentMixture.Capacity;
+            _remaining.fillAmount = GameManager.Instance.CurrentMixture.Capacity
+                                    - GameManager.Instance.CurrentMixture.RemainingCapacity;
         }
     }
 }

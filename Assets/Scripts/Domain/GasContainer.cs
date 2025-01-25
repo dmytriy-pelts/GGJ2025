@@ -14,9 +14,10 @@ namespace GumFly.Domain
         /// Pulls some gas from the gas container.
         /// </summary>
         /// <returns></returns>
-        public float Pull()
+        public float Pull(float remainingCapacity)
         {
             float pullAmount = Time.deltaTime;
+            pullAmount = Mathf.Min(pullAmount, remainingCapacity);
 
             if (Fill >= pullAmount)
             {

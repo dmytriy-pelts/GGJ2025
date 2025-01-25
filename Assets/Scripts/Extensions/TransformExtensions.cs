@@ -25,16 +25,22 @@ namespace GumFly.Extensions
             }
         }
 
-        public static void FillWithPrefabs<TPrefab, TInstance>(this Transform transform, TPrefab prefab, IEnumerable<TInstance> instances) where TPrefab : MonoBehaviour, IInitializable<TInstance>
+        public static TPrefab[] FillWithPrefabs<TPrefab, TInstance>(this Transform transform, TPrefab prefab, TInstance[] instances) where TPrefab : MonoBehaviour, IInitializable<TInstance>
         {
             // TODO: Could be optimized to reuse prefab instances 
             transform.DestroyChildren();
 
-            foreach (var instance in instances)
+            var prefabs = new TPrefab[instances.Length];
+            for (int i = 0; i < instances.Length; i++)
             {
+                TInstance instance = instances[i];
                 var prefabInstance = Object.Instantiate(prefab, transform);
                 prefabInstance.Initialize(instance);
+                
+                prefabs[i] = prefabInstance;
             }
+
+            return prefabs;
         }
         
         public static void FillWithPrefabs<TPrefab, TInstance>(this Transform transform, TPrefab prefab, TInstance instance, int count) where TPrefab : MonoBehaviour, IInitializable<TInstance>

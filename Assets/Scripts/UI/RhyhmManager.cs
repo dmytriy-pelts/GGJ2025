@@ -12,7 +12,7 @@ namespace GumFly.UI
         {
             await LMotion.Create(0.0f, 1.0f, 3.0f).WithEase(Ease.InOutSine).Bind((capacity) =>
             {
-                GasManager.Instance.Capacity = capacity;
+                GameManager.Instance.CurrentMixture.Capacity = capacity;
             });
             
             return 1.0f;
