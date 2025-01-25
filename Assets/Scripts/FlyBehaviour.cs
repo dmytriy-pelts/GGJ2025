@@ -16,6 +16,7 @@ public class FlyBehaviour : MonoBehaviour
 
     private int _flightDirection;
 
+    private bool _isAbleToEvade = false;
     private bool _isEvading = false;
     private Vector2 _evadingPos = Vector2.zero;
     private float _evadingSpeed = 4.0f;
@@ -30,7 +31,6 @@ public class FlyBehaviour : MonoBehaviour
         initPos.x = Random.Range(-_flightRadius, _flightRadius);
     }
 
-    float velo1D = 0f;
     Vector2 velo2D = Vector2.one;
     void Update()
     {
@@ -38,7 +38,7 @@ public class FlyBehaviour : MonoBehaviour
         Vector2 oldPos = transform.position;
         Vector2 finalPos = Vector2.zero;
 
-        if(_isEvading)
+        if(_isEvading && _isAbleToEvade)
         {
             finalPos = Vector2.SmoothDamp(oldPos, _evadingPos, ref velo2D, 0.5f, _evadingSpeed);
 
@@ -53,8 +53,10 @@ public class FlyBehaviour : MonoBehaviour
             {
                 _flightDirection *= -1;
             }
-            finalPos.x = Mathf.SmoothDamp(oldPos.x, _anchorPos.x + (_flightDirection * (_flightRadius + 0.2f)), ref velo1D, 0.5f, _flightSpeed);
-            finalPos.y = Mathf.Cos(time * 2) * _maxFlightHeight;
+
+            float heighAjustment = Mathf.Cos(time * 2.0f) * 2.0f;
+            Vector2 target = new Vector2(_anchorPos.x + (_flightDirection * (_flightRadius + 0.2f)), _anchorPos.y + heighAjustment);
+            finalPos = Vector2.SmoothDamp(oldPos, target, ref velo2D, 0.5f, _flightSpeed);
         }
 
         this.transform.position = finalPos;
@@ -63,20 +65,19 @@ public class FlyBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_evadionCooldown > 0.0f) { return; }
-        Debug.Log("Evading");
+        if (!_isAbleToEvade || _evadionCooldown > 0.0f) { return; }
 
         _isEvading = true;
         Vector2 bubblePos = other.transform.position;
         Vector2 diff = (Vector2)transform.position - bubblePos;
         _evadingPos = (Vector2)transform.position + diff;
-        Debug.Log(_evadingPos);
         _flightDirection = 1;
         _evadionCooldown = _evadionTotalCooldown;
     }
 
     private void OnDrawGizmos()
     {
+        Gizmos.color = Color.red;
         if (_isEvading)
         {
             Gizmos.DrawSphere(_evadingPos, 0.1f);
