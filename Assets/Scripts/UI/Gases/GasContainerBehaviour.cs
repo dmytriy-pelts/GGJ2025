@@ -1,4 +1,6 @@
 ﻿using GumFly.Domain;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -22,6 +24,12 @@ namespace GumFly.UI.Gases
         public void Initialize(GasContainer gasContainer)
         {
             _gasContainer = gasContainer;
+            _fill.color = gasContainer.Gas.Color;
+
+            LMotion.Create(Vector3.zero, transform.localScale, 0.4f)
+                .WithEase(Ease.InOutQuad)
+                .WithDelay(transform.GetSiblingIndex() * 0.05f)
+                .BindToLocalScale(transform);
         }
 
         private void Update()

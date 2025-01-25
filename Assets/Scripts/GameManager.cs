@@ -13,12 +13,11 @@ namespace GumFly
         Initializing,
         PickingGum,
         Chewing,
-        PickingGas,
         Aiming,
         Finished
     }
 
-    public struct StateChange
+    public struct StateChangeEvent
     {
         public GameState NewState;
         public GameState OldState;
@@ -34,7 +33,7 @@ namespace GumFly
         public GumGasMixture CurrentMixture { get; private set; } = new GumGasMixture();
         
         [field: SerializeField]
-        public UnityEvent<StateChange> StateChanged { get; private set; }
+        public UnityEvent<StateChangeEvent> StateChanged { get; private set; }
 
         [SerializeField]
         private Inventory _inventory;
@@ -61,7 +60,7 @@ namespace GumFly
             Debug.Log($"New State: {newState}");
 
             GameState oldState = State;
-            StateChanged.Invoke(new StateChange { NewState = newState, OldState = oldState });
+            StateChanged.Invoke(new StateChangeEvent { NewState = newState, OldState = oldState });
         }
 
         private async UniTask GameLoop()
@@ -76,14 +75,11 @@ namespace GumFly
                 // 2nd step -- do the rhythm
                 ChangeState(GameState.Chewing);
                 float capacity = await RhyhmManager.Instance.ChewAsync(gum);
-
-                // 3rd step -- gases
-                ChangeState(GameState.PickingGas);
-                await GasManager.Instance.PickGasesAsync(CurrentMixture, capacity);
-
-                // 4th step -- aim
+                
+                // 3rd step -- aim and load
                 ChangeState(GameState.Aiming);
-                await AimManager.Instance.ShootAsync(CurrentMixture);
+                await AimManager.Instance.AimAsync(CurrentMixture);
+                
                 CurrentMixture = new GumGasMixture();
             }
 

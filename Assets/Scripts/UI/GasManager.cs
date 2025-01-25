@@ -38,6 +38,41 @@ namespace GumFly.UI
             }
         }
 
+        private void Start()
+        {
+        }
+
+        private void OnEnable()
+        {
+            GameManager.Instance.StateChanged.AddListener(OnStateChanged);
+        }
+
+        private void OnDisable()
+        {
+            GameManager.Instance.StateChanged.RemoveListener(OnStateChanged);
+        }
+
+        private void OnStateChanged(StateChangeEvent e)
+        {
+            if (e.NewState == GameState.Aiming)
+            {
+                foreach (var container in _containers)
+                {
+                    container.interactable = true;
+                }
+
+                _mixture = GameManager.Instance.CurrentMixture;
+            } else if (e.OldState == GameState.Aiming)
+            {
+                _mixture = null;
+            
+                foreach (var container in _containers)
+                {
+                    container.interactable = false;
+                }
+            }
+        }
+
         private void OnStartPulling(GasContainer gasContainer)
         {
             if (_mixture == null) return;
@@ -50,28 +85,6 @@ namespace GumFly.UI
             _pulling = null;
         }
 
-        public async UniTask PickGasesAsync(GumGasMixture mixture, float capacity)
-        {
-            foreach (var container in _containers)
-            {
-                container.interactable = true;
-            }
-
-            _mixture = mixture;
-
-            await UniTask.Delay(5000);
-            while (_pulling != null)
-            {
-                await UniTask.Yield();
-            }
-            
-            _mixture = null;
-            
-            foreach (var container in _containers)
-            {
-                container.interactable = false;
-            }
-        }
 
         private void Update()
         {

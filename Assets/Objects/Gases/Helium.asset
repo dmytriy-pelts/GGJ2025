@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Helium
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Helium
+  <Color>k__BackingField: {r: 0, g: 1, b: 0.9113486, a: 1}
   <VelocityScale>k__BackingField: 1
   <Gravity>k__BackingField: 0
   <GravityDecay>k__BackingField: 0

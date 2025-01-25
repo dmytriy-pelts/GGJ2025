@@ -17,4 +17,4 @@ MonoBehaviour:
     Duration: 5
   <Radius>k__BackingField: 50
   <Velocity>k__BackingField: 10
-  <Color>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
+  <Color>k__BackingField: {r: 0.72156864, g: 0, b: 0, a: 1}
