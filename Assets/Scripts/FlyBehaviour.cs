@@ -38,9 +38,14 @@ public class FlyBehaviour : MonoBehaviour
 
     void Start()
     {
-        _flightDirection = (Random.Range(0, 1) < 0.5f) ? -1 : 1;
+        _anchorPos = transform.position;
+
+        _flightDirection = (Random.value < 0.5f) ? -1 : 1;
         _targetPos = GetNextRegularTargetPosition(_flightDirection);
         _previousPos = GetNextRegularTargetPosition(-_flightDirection);
+        
+        this.transform.position = Vector2.Lerp(_previousPos, _targetPos, Random.value);
+        SetFacing();
 
         StartCoroutine(WingFlapping());
     }
@@ -75,9 +80,7 @@ public class FlyBehaviour : MonoBehaviour
             _previousPos = _targetPos;
             _targetPos = GetNextRegularTargetPosition(_flightDirection);
 
-            Vector3 dir = this.transform.localScale;
-            dir.x = _flightDirection * -1; // NOTE(dmytriy): (* -1) as correction because the model faces left as prefab
-            this.transform.localScale = dir;
+            SetFacing();
 
             _isEvading = false;
         }
@@ -118,6 +121,13 @@ public class FlyBehaviour : MonoBehaviour
             _targetPos = _evadingPos;
             // TODO(dmytriy): Set new target
         }
+    }
+
+    private void SetFacing()
+    {
+        Vector3 dir = this.transform.localScale;
+        dir.x = _flightDirection * -1; // NOTE(dmytriy): (* -1) as correction because the model faces left as prefab
+        this.transform.localScale = dir;
     }
 
     private IEnumerator WingFlapping()

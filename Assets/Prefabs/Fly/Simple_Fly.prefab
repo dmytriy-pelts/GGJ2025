@@ -198,10 +198,13 @@ MonoBehaviour:
   _flyProperty: {fileID: 11400000, guid: b06b8d4df1cefba4bbc9792996c0c2a8, type: 2}
   _wingPivot: {fileID: 759796908955534102}
   _wingFlapDurationInSec: 0.05
-  _flightRadius: 2
-  _maxFlightHeight: 0.3
+  _flightRadius: 600
+  _maxFlightHeight: 240
+  _elevationFrequency: 15
   _anchorPos: {x: 0, y: 0}
   _flightSpeed: 1
+  _previousPos: {x: 0, y: 0}
+  _targetPos: {x: 0, y: 0}
 --- !u!1 &2329739444016727466
 GameObject:
   m_ObjectHideFlags: 0

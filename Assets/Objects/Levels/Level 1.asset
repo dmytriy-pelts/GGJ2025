@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d869fb6373fddb04a9bbdbe8c77d0669, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
-  <flyTypesInLevel>k__BackingField: []
+  <flyTypesInLevel>k__BackingField:
+  - amount: 5
+    reference: {fileID: 2156257765938942366, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
