@@ -43,8 +43,8 @@
      style="stroke: rgb(0, 0, 0);"
      cx="250"
      cy="250"
-     rx="131.723"
-     ry="130"
+     rx="123"
+     ry="123"
      id="ellipse1" />
   <ellipse
      style="stroke: rgb(0, 0, 0); fill: rgb(255, 255, 255);"
@@ -71,8 +71,8 @@
           r="120" />
   <ellipse
      style="fill:#ffffff;stroke:#ffffff"
-     cx="211.07008"
-     cy="253.50908"
+     cx="180.07008"
+     cy="240.50908"
      rx="41.162994"
      ry="28.939997"
      transform="rotate(-14.99994)"
