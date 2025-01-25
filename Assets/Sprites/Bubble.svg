@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 500 500"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="Blubb.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="2.426"
+     inkscape:cx="249.7939"
+     inkscape:cy="217.02391"
+     inkscape:window-width="2560"
+     inkscape:window-height="1494"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5" />
+    <mask id="circle-mask">
+        <ellipse
+                style="fill: white"
+                cx="250"
+                cy="250"
+                rx="113"
+                ry="113"
+                id="ellipse3" />
+    </mask>
+  <ellipse
+     style="stroke: rgb(0, 0, 0);"
+     cx="250"
+     cy="250"
+     rx="131.723"
+     ry="130"
+     id="ellipse1" />
+  <ellipse
+     style="stroke: rgb(0, 0, 0); fill: rgb(255, 255, 255);"
+     cx="250"
+     cy="250"
+     rx="120"
+     ry="120"
+     id="ellipse2" />
+  
+  <ellipse
+          style="fill: rgb(248, 140, 140); stroke: rgb(248, 140, 140);"
+          cx="250"
+          cy="250"
+          rx="113"
+          ry="113"
+          id="ellipse3" />
+  
+  <circle
+          mask="url(#circle-mask)"
+          style="fill: rgb(254, 198, 195)"
+          cx="228.62198"
+          cy="197.49219"
+          id="ellipse4"
+          r="120" />
+  <ellipse
+     style="fill:#ffffff;stroke:#ffffff"
+     cx="211.07008"
+     cy="253.50908"
+     rx="41.162994"
+     ry="28.939997"
+     transform="rotate(-14.99994)"
+     id="ellipse5" />
+</svg>

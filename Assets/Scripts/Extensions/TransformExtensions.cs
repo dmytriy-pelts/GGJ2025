@@ -16,11 +16,11 @@ namespace GumFly.Extensions
             {
                 if (Application.isPlaying)
                 {
-                    Object.Destroy(transform.GetChild(i));
+                    Object.Destroy(transform.GetChild(i).gameObject);
                 }
                 else
                 {
-                    Object.DestroyImmediate(transform.GetChild(i));
+                    Object.DestroyImmediate(transform.GetChild(i).gameObject);
                 }
             }
         }
