@@ -8,6 +8,10 @@ namespace GumFly.UI
 {
     public class GasManager : MonoSingleton<GasManager>
     {
+        public float Capacity { get; set; }
+        
+        [SerializeField]
+        private RectTransform _container;
         private Inventory _inventory;
 
         public void Initialize(Inventory inventory)
