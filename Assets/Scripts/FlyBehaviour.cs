@@ -2,14 +2,14 @@ using GumFly.ScriptableObjects;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent (typeof(CircleCollider2D)), RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CircleCollider2D)), RequireComponent(typeof(Rigidbody2D))]
 public class FlyBehaviour : MonoBehaviour
 {
     [SerializeField]
     private Fly _flyProperty;
-    [SerializeField] 
+    [SerializeField]
     private Transform _wingPivot;
-    [SerializeField] 
+    [SerializeField]
     private float _wingFlapDurationInSec;
 
     [SerializeField]
@@ -39,47 +39,65 @@ public class FlyBehaviour : MonoBehaviour
     void Start()
     {
         _flightDirection = (Random.Range(0, 1) < 0.5f) ? -1 : 1;
-        Vector2 initPos = _anchorPos;
-        initPos.x = Random.Range(-_flightRadius, _flightRadius);
+        _targetPos = GetNextRegularTargetPosition(_flightDirection);
+        _previousPos = GetNextRegularTargetPosition(-_flightDirection);
 
         StartCoroutine(WingFlapping());
     }
+    [SerializeField]
+    Vector2 _previousPos = Vector2.zero;
+    [SerializeField]
+    Vector2 _targetPos = Vector2.zero;
 
-    Vector2 velo2D = Vector2.one;
+    private Vector2 GetNextRegularTargetPosition(float dir)
+    {
+        Vector3 newPos = _anchorPos;
+        newPos.x = _anchorPos.x + (_flightRadius * dir);
+
+        Debug.Log(newPos);
+        return newPos;
+    }
+
     void Update()
     {
         float time = Time.time;
-        Vector2 oldPos = transform.position;
-        Vector2 finalPos = Vector2.zero;
+        Vector2 currentPos = this.transform.position;
 
-        if(_isEvading && _isAbleToEvade)
+        float totalLength = (_targetPos - _previousPos).magnitude;
+        float distanceToTarget = (currentPos - _targetPos).magnitude;
+        float distanceAsScale = distanceToTarget / totalLength;
+        float speedScale = getSphericalSpeedFromScale01(distanceAsScale);
+        Debug.Log(distanceAsScale + "   " + speedScale);
+
+        if (distanceAsScale <= 0.1f)
         {
-            finalPos = Vector2.SmoothDamp(oldPos, _evadingPos, ref velo2D, 0.5f, _evadingSpeed);
+            _flightDirection *= -1;
+            // TODO(dmytriy): Set new target
+            _previousPos = _targetPos;
+            _targetPos = GetNextRegularTargetPosition(_flightDirection);
 
-            if(Vector2.Distance(oldPos, finalPos) < 0.001f)
-            {
-                _isEvading = false;
-            }
-        }
-        else
-        {
-            if(Mathf.Abs(oldPos.x - _anchorPos.x) >= _flightRadius)
-            {
-                _flightDirection *= -1;
+            Vector3 dir = this.transform.localScale;
+            dir.x = _flightDirection * -1; // NOTE(dmytriy): (* -1) as correction because the model faces left as prefab
+            this.transform.localScale = dir;
 
-                Vector3 dir = this.transform.localScale;
-                dir.x = _flightDirection * -1; // NOTE(dmytriy): (* -1) as correction because the model faces left as prefab
-                this.transform.localScale = dir;
-            }
-
-            float heighAjustment = Mathf.Cos(time * _elevationFrequency) * _maxFlightHeight;
-            Debug.Log(heighAjustment);
-            Vector2 target = new Vector2(_anchorPos.x + (_flightDirection * (_flightRadius + 0.2f)), _anchorPos.y + heighAjustment);
-            finalPos = Vector2.SmoothDamp(oldPos, target, ref velo2D, 0.5f, _flightSpeed);
+            _isEvading = false;
         }
 
-        this.transform.position = finalPos;
+        Vector2 nextPos = _targetPos;
+
+        if (!_isEvading)
+        {
+            nextPos.y += Mathf.Sin(time * _elevationFrequency) * _maxFlightHeight;
+        }
+
+        this.transform.position = Vector2.MoveTowards(currentPos, _targetPos, _flightSpeed *  speedScale);
+
         _evasionCooldown -= Time.deltaTime;
+    }
+
+    private float getSphericalSpeedFromScale01(float scale)
+    {
+        return Mathf.Abs(Mathf.Sin(scale * Mathf.PI * 0.5f)) * 0.5f;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -92,11 +110,17 @@ public class FlyBehaviour : MonoBehaviour
         _evadingPos = (Vector2)transform.position + diff;
         _flightDirection = 1;
         _evasionCooldown = _evasionTotalCooldown;
+
+        if (_isEvading && _isAbleToEvade)
+        {
+            _targetPos = _evadingPos;
+            // TODO(dmytriy): Set new target
+        }
     }
 
     private IEnumerator WingFlapping()
     {
-        while(_isAlive)
+        while (_isAlive)
         {
             yield return new WaitForSeconds(_wingFlapDurationInSec);
 

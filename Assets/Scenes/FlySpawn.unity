@@ -732,7 +732,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7644007919616875017, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
       propertyPath: _flightSpeed
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7644007919616875017, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
       propertyPath: _flightRadius
