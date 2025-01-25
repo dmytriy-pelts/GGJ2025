@@ -1,0 +1,167 @@
+﻿using Cysharp.Threading.Tasks;
+using GumFly.Extensions;
+using GumFly.UI;
+using GumFly.UI.ChewChew;
+using GumFly.Utils;
+using LitMotion;
+using LitMotion.Extensions;
+using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+namespace GumFly
+{
+    [RequireComponent(typeof(RectTransform))]
+    [DefaultExecutionOrder(-800)]
+    public class FaceManager : MonoSingleton<FaceManager>
+    {
+        [SerializeField]
+        private AudioClip[] _swooshSounds;
+
+        [SerializeField]
+        private AudioClip[] _chewingSounds;
+        
+        private RectTransform _rectTransform;
+        
+        [SerializeField]
+        private Transform _cursorPos;
+
+        [SerializeField]
+        private Transform _cheek;
+        
+        [SerializeField]
+        private Transform _chew0;
+        
+        [SerializeField]
+        private Transform _chew1;
+        
+        [SerializeField]
+        private Transform _chew2;
+        
+        private Vector3 _initialPosition;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
+            _rectTransform = GetComponent<RectTransform>();
+            _initialPosition = transform.position;
+        }
+
+
+        private void Start()
+        {
+            GameManager.Instance.StateChanged.AddListener(OnStateChanged);
+            RhythmManager.Instance.Chewed.AddListener(OnChewed);
+        }
+
+        private void PlaySwoosh(int i)
+        {
+            var sound = _swooshSounds[i % _swooshSounds.Length];
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, 0.5f);
+        }
+        
+        private void OnChewed(ChewEvent e)
+        {
+            PlayChew();
+
+            if (e.Key == KeyType.L)
+            {
+                _chew0.gameObject.SetActive(false);
+                _chew1.gameObject.SetActive(true);
+                _chew2.gameObject.SetActive(false);
+            }
+            else
+            {
+                _chew0.gameObject.SetActive(false);
+                _chew1.gameObject.SetActive(false);
+                _chew2.gameObject.SetActive(true);
+            }
+        }
+        
+        private void PlayChew()
+        {
+            if (_chewingSounds.Length == 0) return;
+            
+            var sound = _chewingSounds[Random.Range(0, _chewingSounds.Length)];
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, 1.0f);
+        }
+
+        private async void OnStateChanged(StateChangeEvent e)
+        {
+            var min = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            var max = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+            if (e.OldState == GameState.Aiming)
+            {
+                EnableChewing(false);
+            }
+            
+            switch (e.NewState)
+            {
+                case GameState.Initializing:
+                    break;
+                case GameState.PickingGum:
+                    var gumManager = GumManager.Instance.RectTransform;
+
+                    // Hide
+                    PlaySwoosh(0);
+                    await LMotion.Create(transform.position,
+                            transform.position.WithX(min.x - _rectTransform.rect.width), 1f)
+                        .WithEase(Ease.InOutCirc)
+                        .BindToPosition(transform);
+
+                    await UniTask.Delay(250);
+                    
+                    // Re-emerge
+                    PlaySwoosh(1);
+                    transform.localScale = Vector3.one * 1.5f;
+
+                    var centerBottom = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.min.y));
+                    var centerTop = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.max.y + 100));
+                    await LMotion.Create(
+                        centerBottom,
+                        centerTop,
+                        0.5f)
+                        .BindToPosition(transform);
+                    break;
+                case GameState.Chewing:
+                    EnableChewing(true);
+                    var translation = RhythmManager.Instance.Cursor.position - _cursorPos.position;
+                    var rhythmManager = RhythmManager.Instance.Cursor;
+                    
+                    PlaySwoosh(3);
+                    LMotion.Create(transform.position, transform.position + translation, 0.5f)
+                        .WithEase(Ease.InOutCubic)
+                        .BindToPosition(transform);
+
+                    break;
+                case GameState.Aiming:
+                    PlaySwoosh(4);
+                    await LMotion.Create(transform.position, transform.position.WithY(min.y) + _rectTransform.rect.height * Vector3.down, 0.5f)
+                        .BindToPosition(transform);
+
+                    transform.localScale = Vector3.one;
+                    PlaySwoosh(5);
+                    await LMotion.Create(_initialPosition.WithX(min.x - _rectTransform.rect.width), _initialPosition, 0.5f)
+                        .BindToPosition(transform);
+                    
+                    break;
+                case GameState.Finished:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+        }
+
+        private void EnableChewing(bool enabled)
+        {
+            _cheek.gameObject.SetActive(!enabled);
+            _chew0.gameObject.SetActive(enabled);
+            _chew1.gameObject.SetActive(false);
+            _chew2.gameObject.SetActive(false);
+            
+        }
+    }
+}

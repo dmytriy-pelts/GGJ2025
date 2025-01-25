@@ -20,6 +20,9 @@ namespace GumFly.UI
         [SerializeField]
         private RectTransform _gumPackageContainer;
         
+        [SerializeField]
+        public RectTransform RectTransform => transform as RectTransform;
+        
         private List<GumPackageBehaviour> _gumPackages = new List<GumPackageBehaviour>();
 
         private UniTaskCompletionSource<Gum> _selectedGum = new UniTaskCompletionSource<Gum>();
@@ -43,17 +46,20 @@ namespace GumFly.UI
                     _selectedGum.TrySetResult(gum);
                 });
                 
+                instance.enabled = false;
                 _gumPackages.Add(instance);
             }
         }
 
         public async UniTask<Gum> PickGumAsync()
         {
+            // Wait for face
+            await UniTask.Delay(1000);
+            
             foreach (var package in _gumPackages)
             {
                 package.enabled = true;
             }
-            
 
             var gum = await _selectedGum.Task;
             _selectedGum = new UniTaskCompletionSource<Gum>();

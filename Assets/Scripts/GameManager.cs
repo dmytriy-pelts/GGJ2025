@@ -23,6 +23,7 @@ namespace GumFly
         public GameState OldState;
     }
 
+    [DefaultExecutionOrder(-1000)]
     public class GameManager : MonoSingleton<GameManager>
     {
         public GameState State { get; private set; } = GameState.Initializing;
@@ -60,11 +61,15 @@ namespace GumFly
             Debug.Log($"New State: {newState}");
 
             GameState oldState = State;
+            State = newState;
+            
             StateChanged.Invoke(new StateChangeEvent { NewState = newState, OldState = oldState });
         }
 
         private async UniTask GameLoop()
         {
+            await UniTask.Delay(2000);
+            
             while (_inventory.HasAnyGumsLeft)
             {
                 // 1st step -- pick a gum

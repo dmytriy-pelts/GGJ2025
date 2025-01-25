@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
@@ -44,6 +45,14 @@ namespace GumFly.Utils
                 
                 Debug.LogError($"Singleton object not found: {typeof(T).FullName}");
                 return null;
+            }
+        }
+
+        protected virtual void Awake()
+        {
+            if (!_instance)
+            {
+                _instance = this as T;
             }
         }
     }

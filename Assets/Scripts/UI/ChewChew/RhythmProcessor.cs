@@ -29,6 +29,13 @@ namespace GumFly.UI.ChewChew
         Wrong
     }
 
+    public struct RhythmJudgementEvent
+    {
+        public KeyType Key;
+        public RhythmJudgement Judgement;
+        public RhythmEvent Source;
+    }
+
     public class RhythmProcessor : MonoBehaviour
     {
         [SerializeField]
@@ -66,7 +73,7 @@ namespace GumFly.UI.ChewChew
         
         public int EventCount { get; private set; }
 
-        public UnityEvent<RhythmJudgement> JudgementMade { get; } = new UnityEvent<RhythmJudgement>();
+        public UnityEvent<RhythmJudgementEvent> Chewed { get; } = new UnityEvent<RhythmJudgementEvent>();
 
         private void Start()
         {
@@ -150,7 +157,12 @@ namespace GumFly.UI.ChewChew
                     
                     //_behaviours.Remove(behaviour);
 
-                    JudgementMade.Invoke(result);
+                    Chewed.Invoke(new RhythmJudgementEvent
+                    {
+                        Judgement = result,
+                        Source = e,
+                        Key = type
+                    });
                 }
                 else
                 {

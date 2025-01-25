@@ -31,7 +31,7 @@ namespace GumFly.UI.ChewChew
         {
             if (result == RhythmJudgement.Wrong)
             {
-                LMotion.Create(1.0f, 0.0f, 2f)
+                LMotion.Create(1.0f, 0.0f, 1f)
                     .WithEase(Ease.Linear)
                     .BindToAlpha(_group);
 
@@ -41,28 +41,27 @@ namespace GumFly.UI.ChewChew
             else
             {
                 
-                LMotion.Create(1.0f, 0.0f, 1f)
-                    .WithEase(Ease.InCubic)
+                LMotion.Create(1.0f, 0.0f, 0.5f)
+                    .WithEase(Ease.OutQuint)
                     .BindToAlpha(_group);
                 
                 if (result == RhythmJudgement.Bad)
                 {
                     var x = transform.localPosition.x;
-                    LMotion.Create(x - 100f, x + 100f, 0.5f)
+                    LMotion.Create(x - 100f, x + 100f, 0.25f)
                         .WithLoops(3, LoopType.Yoyo)
                         .WithEase(Ease.InOutCubic)
                         .BindToLocalPositionX(transform);
                 }
-
-
-                LMotion.Create(transform.localScale, transform.localScale * 2.0f, 1f)
-                    .WithEase(Ease.OutCubic)
+                
+                LMotion.Create(transform.localScale, transform.localScale * .5f, 0.5f)
+                    .WithEase(Ease.OutQuint)
                     .BindToLocalScale(transform);
 
-
-                LMotion.Create(0.0f, 400.0f, 2f)
-                    .WithOnComplete(() => Destroy(gameObject))
-                    .BindToLocalPositionY(transform);
+                //
+                // LMotion.Create(0.0f, 400.0f, 1f)
+                //     .WithOnComplete(() => Destroy(gameObject))
+                //     .BindToLocalPositionY(transform);
             }
         }
     }

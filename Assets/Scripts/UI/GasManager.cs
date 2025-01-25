@@ -17,10 +17,19 @@ namespace GumFly.UI
         [SerializeField]
         private GasContainerBehaviour _gasContainerPrefab;
 
+        [SerializeField]
+        private AudioSource _audioSource;
+
+        [SerializeField]
+        private AudioClip _gasClip;
+        
+        [SerializeField]
+        private AudioClip _noGasClip;
+
+
         private Inventory _inventory;
         private GumGasMixture _mixture;
-
-
+        
         private GasContainer _pulling;
         private GasContainerBehaviour[] _containers;
 
@@ -78,10 +87,12 @@ namespace GumFly.UI
             if (_mixture == null) return;
 
             _pulling = gasContainer;
+            _audioSource.Play();
         }
 
         private void OnStopPulling(GasContainer gasContainer)
         {
+            _audioSource.Stop();
             _pulling = null;
         }
 
@@ -92,6 +103,8 @@ namespace GumFly.UI
             
             float amount = _pulling.Pull(_mixture.RemainingCapacity);
             _mixture.Add(_pulling.Gas, amount);
+            
+            _audioSource.clip = amount > 0.0f ? _gasClip : _noGasClip;
         }
     }
 }

@@ -2,28 +2,36 @@
 using GumFly.ScriptableObjects;
 using GumFly.UI.ChewChew;
 using GumFly.Utils;
-using LitMotion;
-using System;
-using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Playables;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace GumFly.UI
 {
+    public struct ChewEvent
+    {
+        public KeyType Key;
+    }
+    
+    [DefaultExecutionOrder(-999)]
     public class RhythmManager : MonoSingleton<RhythmManager>
     {
         [SerializeField]
         private RhythmProcessor _processor;
 
-        private void Awake()
+        [field:SerializeField]
+        public RectTransform Cursor { get; private set; }
+        public UnityEvent<ChewEvent> Chewed { get; } = new UnityEvent<ChewEvent>();
+
+        protected override void Awake()
         {
-            _processor.JudgementMade.AddListener(OnJudgementMade);
+            base.Awake();
+            _processor.Chewed.AddListener(OnJudgementMade);
         }
 
-        private void OnJudgementMade(RhythmJudgement j)
+        private void OnJudgementMade(RhythmJudgementEvent e)
         {
-            float factor = j switch
+            float factor = e.Judgement switch
             {
                 RhythmJudgement.Perfect => 1.0f,
                 RhythmJudgement.Good => 0.7f,
@@ -32,10 +40,18 @@ namespace GumFly.UI
             };
 
             GameManager.Instance.CurrentMixture.Capacity += factor / _processor.EventCount;
+            
+            Chewed.Invoke(new ChewEvent()
+            {
+                Key = e.Key,
+            });
         }
 
         public async UniTask<float> ChewAsync(Gum gum)
         {
+            // Wait for face
+            await UniTask.Delay(1000);
+            
             GameManager.Instance.CurrentMixture.Capacity = 0.0f;
             var timelines = gum.Rhythm.Timelines;
             if (timelines.Length == 0)
