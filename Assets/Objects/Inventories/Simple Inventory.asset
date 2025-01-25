@@ -17,4 +17,10 @@ MonoBehaviour:
     Count: 4
   - GumType: {fileID: 11400000, guid: 4f2e487b4ee4de74cb43da9ad94a5cab, type: 2}
     Count: 6
-  <Gases>k__BackingField: []
+  <Gases>k__BackingField:
+  - Gas: {fileID: 11400000, guid: cc6605176866a3c478394fbb4e93e7b3, type: 2}
+    Fill: 1
+  - Gas: {fileID: 11400000, guid: 533cf08ef4c851a4fa8c4e6a9f320bfb, type: 2}
+    Fill: 1
+  - Gas: {fileID: 11400000, guid: dbf5b8615ad2da846bb710ed49a39fa2, type: 2}
+    Fill: 1

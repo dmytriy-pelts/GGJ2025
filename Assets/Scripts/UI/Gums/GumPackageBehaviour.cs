@@ -1,4 +1,5 @@
 ﻿using GumFly.Domain;
+using GumFly.Extensions;
 using GumFly.ScriptableObjects;
 using System;
 using UnityEngine;
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 
 namespace GumFly.UI.Gums
 {
-    public class GumPackageBehaviour : MonoBehaviour, IPointerClickHandler
+    public class GumPackageBehaviour : MonoBehaviour, IPointerClickHandler, IInitializable<GumPackage>
     {
         [SerializeField]
         private GumBehaviour _gumBehaviourPrefab;
@@ -38,16 +39,7 @@ namespace GumFly.UI.Gums
         {
             _package = package;
 
-            // Clean up
-            for (int i = _gumContainer.childCount - 1; i >= 0; i--)
-            {
-                Destroy(_gumContainer.GetChild(i).gameObject);
-            }
-
-            for (int i = 0; i < _package.Count; i++)
-            {
-                Instantiate(_gumBehaviourPrefab, _gumContainer);
-            }
+            _gumContainer.FillWithPrefabs(_gumBehaviourPrefab, package.GumType, package.Count);
         }
 
         public void OnPointerClick(PointerEventData eventData)

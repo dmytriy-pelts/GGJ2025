@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using GumFly.Domain;
+using GumFly.Extensions;
 using GumFly.ScriptableObjects;
 using GumFly.UI.Gums;
 using GumFly.Utils;
@@ -29,10 +30,7 @@ namespace GumFly.UI
             _inventory = inventory;
             
             // Clean
-            for (int i = _gumPackageContainer.childCount - 1; i >= 0; i--)
-            {
-                Destroy(_gumPackageContainer.GetChild(i));
-            }
+            _gumPackageContainer.DestroyChildren();
             _gumPackages.Clear();
 
             foreach (var package in inventory.Gums)
