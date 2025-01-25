@@ -1,5 +1,6 @@
 using GumFly;
 using GumFly.Domain;
+using GumFly.Extensions;
 using UnityEngine;
 
 public class BubbleFlightPath : MonoBehaviour
@@ -26,6 +27,9 @@ public class BubbleFlightPath : MonoBehaviour
 
     private bool _isBubbleFlying = false;
     private float _bubbleFlyTimeInSec = 0.0f;
+    private float _bubbleDistanceFlew = 0.0f;
+    [SerializeField]
+    private float _bubbleDefaultDistancePerSec = 100.0f;
     private Vector2 _releasePoint = Vector2.zero;
 
     private float _finalVelocity = 0.0f;
@@ -108,15 +112,22 @@ public class BubbleFlightPath : MonoBehaviour
         }
         else
         {
-            _bubbleFlyTimeInSec += Time.deltaTime;
+            // _bubbleFlyTimeInSec += Time.deltaTime;
+            float timeStep = Time.deltaTime * (_bubbleDefaultDistancePerSec / _pathLength);
+            _bubbleFlyTimeInSec += timeStep;// (_lineRenderer.positionCount * 0.2f / _bubbleDefaultDistancePerSec) * Time.deltaTime;
             Vector2 pos = getPostition(_bubbleFlyTimeInSec, _finalVelocity, _finalGravityDecay);
-            _bubbleRef.transform.position = pos + _releasePoint;
+            Vector2 adjustedToReleasePointPos = pos + _releasePoint;
+            _bubbleDistanceFlew += ((Vector2)_bubbleRef.transform.position - adjustedToReleasePointPos).magnitude;
+            Debug.Log(_bubbleDistanceFlew);
+            _bubbleRef.transform.position = adjustedToReleasePointPos;
 
-            // TODO(dmytriy): Check if bubble is out of bounds
-            if(_bubbleRef.gameObject.activeSelf == false)
+            Vector2 bubblePos = _bubbleRef.transform.position;
+            bool bubbleIsOutOfBounds = (bubblePos.x > _maxBounds.x || bubblePos.y < _minBounds.y || bubblePos.y > _maxBounds.y);
+            if(_bubbleRef.gameObject.activeSelf == false || bubbleIsOutOfBounds)
             {
                 _isBubbleFlying = false;
                 _bubbleFlyTimeInSec = 0.0f;
+                // TODO(dmytriy): Reset everything bubble related
             }
         }
     }
