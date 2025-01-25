@@ -81,7 +81,9 @@ namespace GumFly
 
                 // 4th step -- aim
                 ChangeState(GameState.Aiming);
-                await AimManager.Instance.ShootAsync();
+                var finalMixture =_currentMixture;
+                _currentMixture = new GumGasMixture();
+                await AimManager.Instance.ShootAsync(finalMixture);
             }
             
             ChangeState(GameState.Finished);
