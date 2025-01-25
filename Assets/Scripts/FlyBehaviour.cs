@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FlyBehaviour : MonoBehaviour
@@ -21,8 +19,8 @@ public class FlyBehaviour : MonoBehaviour
     private Vector2 _evadingPos = Vector2.zero;
     private float _evadingSpeed = 4.0f;
 
-    private float _evadionTotalCooldown = 1.0f;
-    private float _evadionCooldown = 1.0f;
+    private float _evasionTotalCooldown = 1.0f;
+    private float _evasionCooldown = 1.0f;
 
     void Start()
     {
@@ -60,19 +58,19 @@ public class FlyBehaviour : MonoBehaviour
         }
 
         this.transform.position = finalPos;
-        _evadionCooldown -= Time.deltaTime;
+        _evasionCooldown -= Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!_isAbleToEvade || _evadionCooldown > 0.0f) { return; }
+        if (!_isAbleToEvade || _evasionCooldown > 0.0f) { return; }
 
         _isEvading = true;
         Vector2 bubblePos = other.transform.position;
         Vector2 diff = (Vector2)transform.position - bubblePos;
         _evadingPos = (Vector2)transform.position + diff;
         _flightDirection = 1;
-        _evadionCooldown = _evadionTotalCooldown;
+        _evasionCooldown = _evasionTotalCooldown;
     }
 
     private void OnDrawGizmos()
