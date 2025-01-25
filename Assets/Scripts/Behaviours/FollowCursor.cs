@@ -15,7 +15,7 @@ namespace GumFly.Behaviours
 
         private void Update()
         {
-            var target = Input.mousePosition;
+            var target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var diff = target.XY() - transform.parent.position.XY();
 
             if (diff.magnitude > 20)
