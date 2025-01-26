@@ -1,6 +1,8 @@
 ﻿using GumFly.Domain;
 using GumFly.Extensions;
 using GumFly.ScriptableObjects;
+using LitMotion;
+using LitMotion.Extensions;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -58,6 +60,17 @@ namespace GumFly.UI.Gums
                     .Consume();
                 
                 GumPicked.Invoke(gum);
+                
+                LSequence.Create()
+                    .Append(
+                        LMotion.Create(Vector3.one, Vector3.one * 1.3f, 0.1f)
+                            .WithEase(Ease.OutQuart).BindToLocalScale(transform)
+                    )
+                    .Append(
+                        LMotion.Create(Vector3.one * 1.3f, Vector3.one, 0.3f)
+                            .WithEase(Ease.InQuad).BindToLocalScale(transform)
+                    )
+                    .Run();
             }
         }
     }
