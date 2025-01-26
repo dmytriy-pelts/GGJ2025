@@ -17,6 +17,8 @@ public class BubbleBehaviour : MonoBehaviour
     private Vector2 _initPos;
     private bool _isPopped = false;
 
+    private float _timeSinceReleaseInSec = 0.0f;
+
     private void OnEnable() 
     {
         _initPos = this.transform.position;
@@ -33,11 +35,17 @@ public class BubbleBehaviour : MonoBehaviour
     public void Update()
     {
         if(IsReleased && !_isPopped)
-        {
+        {  
+            _timeSinceReleaseInSec += Time.deltaTime;
             float timeStep = Time.deltaTime * (BubbleDistancePerSec / PathLength);
             _flightTime += timeStep;
             Vector2 newPos = BubbleFlightPath.GetPostition(_flightTime, Velocity, GravityDecay);
             this.transform.position = newPos + _initPos;
+        }
+
+        if(_timeSinceReleaseInSec > 10f)
+        {
+            Destroy(this.gameObject);
         }
     }
 }
