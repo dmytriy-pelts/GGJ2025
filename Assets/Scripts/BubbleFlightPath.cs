@@ -31,13 +31,9 @@ public class BubbleFlightPath : MonoBehaviour
     private LineRenderer _lineRenderer;
     private Vector3[] points = new Vector3[60];
 
-    private bool _isBubbleFlying = false;
-    private float _bubbleFlyTimeInSec = 0.0f;
-    private float _bubbleDistanceFlew = 0.0f;
-
     [SerializeField]
     private float _bubbleDefaultDistancePerSec = 100.0f;
-    
+
     private float _finalVelocity = 0.0f;
     private float _finalGravityDecay = 0.0f;
 
@@ -93,7 +89,7 @@ public class BubbleFlightPath : MonoBehaviour
     public void Shoot()
     {
         SoundManager.Instance.PlaySpit();
-        
+
         _bubbleRef.Mixture = _gameManager.CurrentMixture;
         _bubbleRef.PathLength = _pathLength;
         _bubbleRef.Weight = _gameManager.CurrentMixture.Gum.Weight;
@@ -117,94 +113,42 @@ public class BubbleFlightPath : MonoBehaviour
     {
         if (GameManager.Instance.State != GameState.Aiming) return;
 
+        GumGasMixture gasMix = _gameManager.CurrentMixture;
 
-        // if (_gameManager.State == GameState.Aiming)
-        // {
-        //     InstantiateBubble();
-        // }
-
-        // if(Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     if(_bubbleRef == null)
-        //     {
-        //         InstantiateBubble();
-        //     }
-        //
-        //     //_isBubbleFlying = true;
-        //     _releasePoint = this.transform.position;
-        //
-        //     _bubbleRef.Mixture = _gameManager.CurrentMixture;
-        //     _bubbleRef.PathLength = _pathLength;
-        //     _bubbleRef.Weight = 10; //_gameManager.CurrentMixture.Gum.Weight;
-        //     _bubbleRef.Velocity = _finalVelocity;
-        //     _bubbleRef.GravityDecay = _finalGravityDecay;
-        //     _bubbleRef.BubbleDistancePerSec = _bubbleDefaultDistancePerSec;
-        //     _bubbleRef.IsReleased = true;
-        //
-        //     // Forget bubble
-        //     _bubbleRef = null;
-        // }
-
-        //if (!_isBubbleFlying)
+        _pathLength = 0.0f;
+        float velocityFromGas = 0.0f;
+        float gravityDecayFromGas = 0.0f;
+        float bubbleSize = 0.0f;
+        foreach (var gas in gasMix.GasAmounts)
         {
-            GumGasMixture gasMix = _gameManager.CurrentMixture;
-
-            _pathLength = 0.0f;
-            float velocityFromGas = 0.0f;
-            float gravityDecayFromGas = 0.0f;
-            float bubbleSize = 0.0f;
-            foreach (var gas in gasMix.GasAmounts)
-            {
-                velocityFromGas += gas.Gas.VelocityScale * gas.Amount;
-                gravityDecayFromGas += gas.Gas.GravityDecay * gas.Amount;
-                bubbleSize += gas.Gas.SizeScale * gas.Amount;
-            }
-
-            _finalVelocity = MAX_ADDITIONAL_VELOCITY * velocityFromGas;
-            _finalGravityDecay = MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
-            
-            if (_bubbleRef)
-            {
-                _bubbleRef.transform.position = transform.position;
-                _bubbleRef.transform.localScale = Vector3.one * (_bubbleInitScale + _bubbleFillScale * bubbleSize);
-            }
-
-            float tStep = 0.2f;
-            for (int stepIndex = 1; stepIndex < points.Length; stepIndex++)
-            {
-                Vector2 pos = GetPostition((stepIndex * tStep), _finalVelocity, _finalGravityDecay);
-                points[stepIndex] = pos;
-                _pathLength = (points[stepIndex - 1] - points[stepIndex]).magnitude;
-                pos += (Vector2)this.transform.position;
-                if (pos.x > _maxBounds.x || pos.y < _minBounds.y || pos.y > _maxBounds.y)
-                {
-                    _lineRenderer.positionCount = stepIndex + 1;
-                    _lineRenderer.SetPositions(points);
-                    break;
-                }
-            }
+            velocityFromGas += gas.Gas.VelocityScale * gas.Amount;
+            gravityDecayFromGas += gas.Gas.GravityDecay * gas.Amount;
+            bubbleSize += gas.Gas.SizeScale * gas.Amount;
         }
-        /*
-        else
+
+        _finalVelocity = MAX_ADDITIONAL_VELOCITY * velocityFromGas;
+        _finalGravityDecay = MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
+
+        if (_bubbleRef)
         {
-            // _bubbleFlyTimeInSec += Time.deltaTime;
-            float timeStep = Time.deltaTime * (_bubbleDefaultDistancePerSec / _pathLength);
-            _bubbleFlyTimeInSec += timeStep;// (_lineRenderer.positionCount * 0.2f / _bubbleDefaultDistancePerSec) * Time.deltaTime;
-            Vector2 pos = GetPostition(_bubbleFlyTimeInSec, _finalVelocity, _finalGravityDecay);
-            Vector2 adjustedToReleasePointPos = pos + _releasePoint;
-            _bubbleDistanceFlew += ((Vector2)_bubbleRef.transform.position - adjustedToReleasePointPos).magnitude;
-            Debug.Log(_bubbleDistanceFlew);
-            _bubbleRef.transform.position = adjustedToReleasePointPos;
-
-            Vector2 bubblePos = _bubbleRef.transform.position;
-            bool bubbleIsOutOfBounds = (bubblePos.x > _maxBounds.x || bubblePos.y < _minBounds.y || bubblePos.y > _maxBounds.y);
-            if(_bubbleRef.gameObject.activeSelf == false || bubbleIsOutOfBounds)
-            {
-                _isBubbleFlying = false;
-                _bubbleFlyTimeInSec = 0.0f;
-                // TODO(dmytriy): Reset everything bubble related
-            }
+            _bubbleRef.transform.position = transform.position;
+            _bubbleRef.transform.localScale = Vector3.one * (_bubbleInitScale + _bubbleFillScale * bubbleSize);
         }
-        */
+
+        float tStep = 0.2f;
+        for (int stepIndex = 1; stepIndex < points.Length; stepIndex++)
+        {
+            Vector2 pos = GetPostition((stepIndex * tStep), _finalVelocity, _finalGravityDecay);
+            points[stepIndex] = pos;
+            _pathLength = (points[stepIndex - 1] - points[stepIndex]).magnitude;
+            pos += (Vector2)this.transform.position;
+            if (pos.x > _maxBounds.x || pos.y < _minBounds.y || pos.y > _maxBounds.y)
+            {
+                _lineRenderer.positionCount = stepIndex + 1;
+                _lineRenderer.SetPositions(points);
+                break;
+            }
+
+        }
     }
 }
