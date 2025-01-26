@@ -25,18 +25,13 @@ public class BubbleFlightPath : MonoBehaviour
     private const float MAX_ADDITIONAL_VELOCITY = 800f;
     private const float MAX_ADDITIONAL_GRAVITY_DACAY = 1.5f;
 
-
     private float _bubbleInitScale;
     private GameManager _gameManager;
     private LineRenderer _lineRenderer;
     private Vector3[] points = new Vector3[60];
 
-    private bool _isBubbleFlying = false;
-    private float _bubbleFlyTimeInSec = 0.0f;
-    private float _bubbleDistanceFlew = 0.0f;
     [SerializeField]
     private float _bubbleDefaultDistancePerSec = 100.0f;
-    private Vector2 _releasePoint = Vector2.zero;
 
     private float _finalVelocity = 0.0f;
     private float _finalGravityDecay = 0.0f;
