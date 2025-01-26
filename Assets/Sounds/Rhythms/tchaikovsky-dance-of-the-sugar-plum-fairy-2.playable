@@ -62,7 +62,7 @@ MonoBehaviour:
     m_TimeScale: 1
     m_ParentTrack: {fileID: -4011151397599441376}
     m_EaseInDuration: 0
-    m_EaseOutDuration: 0
+    m_EaseOutDuration: 0.1944091022014618
     m_BlendInDuration: -1
     m_BlendOutDuration: -1
     m_MixInCurve:
@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Markers:
     m_Objects: []
   m_TrackProperties:
-    volume: 1
+    volume: 0.59
     stereoPan: 0
     spatialBlend: 0
 --- !u!114 &-3872397480646000023

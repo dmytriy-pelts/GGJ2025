@@ -32,9 +32,9 @@ public class BubbleBehaviour : MonoBehaviour
          
     }
 
-    private void OnCollisionEnter2D(Collision2D other) 
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.CompareTag("FlySensor")) { return; }
+        if (other.gameObject.CompareTag("FlySensor")) { return; }
 
         _isPopped = true;
         this.gameObject.SetActive(false);
@@ -60,8 +60,8 @@ public class BubbleBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(IsReleased && !_isPopped)
-        {  
+        if (IsReleased && !_isPopped)
+        {
             Vector2 oldPos = this.transform.position;
             _timeSinceReleaseInSec += Time.deltaTime;
             float timeStep = Time.deltaTime * (BubbleDistancePerSec / PathLength);
@@ -71,9 +71,21 @@ public class BubbleBehaviour : MonoBehaviour
             _rigidbody.MovePosition(newPos + _initPos);
         }
 
-        if(_timeSinceReleaseInSec > 10f)
+        if (_timeSinceReleaseInSec > 10f)
         {
             Destroy(this.gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (!IsReleased) return;
+        
+        var vp = Camera.main.WorldToViewportPoint(this.transform.position);
+        if (vp.y < -0.25f || vp.x > 1.25f)
+        {
+            Debug.Log("Destroy bubble");
+            Destroy(gameObject);
         }
     }
 }

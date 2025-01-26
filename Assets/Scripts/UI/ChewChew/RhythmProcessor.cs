@@ -3,6 +3,7 @@ using GumFly.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
@@ -80,7 +81,7 @@ namespace GumFly.UI.ChewChew
             if (_autostart)
             {
                 Initialize(_director.playableAsset as TimelineAsset);
-                PlayAsync();
+                PlayAsync(default);
             }
         }
 
@@ -115,12 +116,13 @@ namespace GumFly.UI.ChewChew
             _events.Sort((a, b) => a.Time.CompareTo(b.Time));
         }
 
-        public async UniTask PlayAsync()
+        public async UniTask PlayAsync(CancellationToken cancellation)
         {
             _director.Play();
 
             while (_director.state == PlayState.Playing)
             {
+                cancellation.ThrowIfCancellationRequested();
                 await UniTask.Yield();
             }
 

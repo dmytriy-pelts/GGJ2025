@@ -16,7 +16,7 @@ namespace GumFly.Domain
         /// <returns></returns>
         public float Pull(float remainingCapacity)
         {
-            float pullAmount = Time.deltaTime;
+            float pullAmount = Time.deltaTime * Gas.PullSpeed * 0.5f;
             pullAmount = Mathf.Min(pullAmount, remainingCapacity);
 
             if (Fill >= pullAmount)
@@ -28,7 +28,7 @@ namespace GumFly.Domain
             pullAmount = Fill;
             Fill = 0.0f;
 
-            return pullAmount;
+            return pullAmount * 2;
         }
     }
 }

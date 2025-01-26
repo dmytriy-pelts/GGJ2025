@@ -1,12 +1,14 @@
 using GumFly.ScriptableObjects;
+using GumFly.Utils;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class FlyManager : MonoBehaviour
+public class FlyManager : MonoSingleton<FlyManager>
 { 
     [SerializeField]
-    public UnityAction AllFliesDead;
+    public UnityEvent AllFliesDead;
     [SerializeField]
     private Level levelConfig;
     [SerializeField]
@@ -17,6 +19,12 @@ public class FlyManager : MonoBehaviour
     private float _inwardOffsetY = 200.0f;
 
     private List<FlyBehaviour> _flyList = new List<FlyBehaviour>();
+    private bool _allFliesDeadSent = false;
+
+    public Level LevelConfig => levelConfig;
+
+    public int RemainingFlyCount => _flyList.Count(fly => !fly.IsDead);
+    public int DeadFlyCount => _flyList.Count(fly => fly.IsDead);
 
     private void Start()
     {
@@ -42,8 +50,9 @@ public class FlyManager : MonoBehaviour
             }
         }
 
-        if(isAllDead)
+        if(isAllDead && !_allFliesDeadSent)
         {
+            _allFliesDeadSent = true;
             AllFliesDead.Invoke();
         }
     }

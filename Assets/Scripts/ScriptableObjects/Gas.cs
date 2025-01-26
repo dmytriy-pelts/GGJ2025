@@ -19,5 +19,8 @@ namespace GumFly.ScriptableObjects
         
         [field: SerializeField]
         public float GravityDecay { get; private set; } = 0.0f;
+
+        [field: SerializeField]
+        public float PullSpeed { get; private set; } = 1.0f;
     }
 }

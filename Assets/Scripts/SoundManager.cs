@@ -58,7 +58,7 @@ namespace GumFly
             if (_burstSounds.Length == 0) return;
             
             var sound = _burstSounds[Random.Range(0, _burstSounds.Length)];
-            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, .2f);
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, .5f);
         }
 
         public void PlaySpit()

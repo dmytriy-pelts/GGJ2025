@@ -16,6 +16,7 @@ MonoBehaviour:
   <Rhythm>k__BackingField:
     Timelines:
     - {fileID: 11400000, guid: 48e3517c059f34640b03d5ca19fd060a, type: 2}
+    - {fileID: 11400000, guid: f57785d9f29dac8459cf42d4018d3dfb, type: 2}
     Duration: 5
   <Radius>k__BackingField: 50
   <Velocity>k__BackingField: 10
