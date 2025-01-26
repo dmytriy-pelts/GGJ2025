@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks.Linq;
 using GumFly.Domain;
 using GumFly.Utils;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -34,12 +35,12 @@ namespace GumFly.UI
             _flightController.gameObject.SetActive(false);
         }
 
-        public async UniTask AimAsync(GumGasMixture mixture)
+        public async UniTask AimAsync(GumGasMixture mixture, CancellationToken cancellation)
         {
             _flightController.gameObject.SetActive(true);
 
             // Placeholder to detect click
-            await _clickSignals.Skip(1).FirstAsync();
+            await _clickSignals.Skip(1).FirstAsync(cancellationToken: cancellation);
             
             _flightController.Shoot();
 

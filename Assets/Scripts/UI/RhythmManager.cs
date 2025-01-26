@@ -4,6 +4,7 @@ using GumFly.UI.ChewChew;
 using GumFly.Utils;
 using LitMotion;
 using LitMotion.Extensions;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -61,7 +62,7 @@ namespace GumFly.UI
             });
         }
 
-        public async UniTask<float> ChewAsync(Gum gum)
+        public async UniTask<float> ChewAsync(Gum gum, CancellationToken cancellation)
         {
             GameManager.Instance.CurrentMixture.Capacity = 0.0f;
             var timelines = gum.Rhythm.Timelines;
@@ -79,7 +80,7 @@ namespace GumFly.UI
             var timeline = timelines[Random.Range(0, timelines.Length)];
             _processor.Initialize(timeline);
             
-            await _processor.PlayAsync();
+            await _processor.PlayAsync(cancellation);
             
             await FaceManager.Instance.MoveToAimingPosition();
             

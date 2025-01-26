@@ -6,6 +6,7 @@ using GumFly.UI.Gums;
 using GumFly.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace GumFly.UI
@@ -20,10 +21,10 @@ namespace GumFly.UI
 
         [SerializeField]
         private RectTransform _gumPackageContainer;
-        
+
         [SerializeField]
         public RectTransform RectTransform => transform as RectTransform;
-        
+
         private List<GumPackageBehaviour> _gumPackages = new List<GumPackageBehaviour>();
 
         private UniTaskCompletionSource<Gum> _selectedGum = new UniTaskCompletionSource<Gum>();
@@ -33,7 +34,7 @@ namespace GumFly.UI
         {
             Debug.Log("Initializing gas manager", this);
             _inventory = inventory;
-            
+
             // Clean
             _gumPackageContainer.DestroyChildren();
             _gumPackages.Clear();
@@ -42,12 +43,12 @@ namespace GumFly.UI
             {
                 var instance = Instantiate(_gumPackagePrefab, _gumPackageContainer);
                 instance.Initialize(package);
-                
+
                 instance.GumPicked.AddListener((gum) =>
                 {
                     _selectedGum.TrySetResult(gum);
                 });
-                
+
                 instance.enabled = false;
                 _gumPackages.Add(instance);
             }
@@ -66,7 +67,7 @@ namespace GumFly.UI
             _canvasGroup.alpha = e.NewState == GameState.PickingGum ? 1.0f : 0.5f;
         }
 
-        public async UniTask<Gum> PickGumAsync()
+        public async UniTask<Gum> PickGumAsync(CancellationToken cancellation)
         {
             await FaceManager.Instance.MoveToGums();
             foreach (var package in _gumPackages)
@@ -74,16 +75,16 @@ namespace GumFly.UI
                 package.enabled = true;
             }
 
-            var gum = await _selectedGum.Task;
+            var gum = await _selectedGum.Task.AttachExternalCancellation(cancellation);
             _selectedGum = new UniTaskCompletionSource<Gum>();
-
-            await UniTask.Delay(1000);
             
+            await UniTask.Delay(1000, cancellationToken: cancellation);
+
             foreach (var package in _gumPackages)
             {
                 package.enabled = false;
             }
-            
+
             return gum;
         }
     }

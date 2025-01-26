@@ -58,6 +58,7 @@ namespace GumFly
             GumManager.Instance.Initialize(_inventoryInstance);
             GasManager.Instance.Initialize(_inventoryInstance);
 
+                
             GameLoop().Forget();
         }
 
@@ -82,21 +83,24 @@ namespace GumFly
         private async UniTask GameLoop()
         {
             await UniTask.Delay(2000);
+            
+            var cancellation = FlyManager.Instance.AllFliesDead.OnInvokeAsync(gameObject.GetCancellationTokenOnDestroy())
+                .ToCancellationToken();
 
             while (_inventory.HasAnyGumsLeft && FlyManager.Instance.RemainingFlyCount > 0 && !_gameOver)
             {
                 // 1st step -- pick a gum
                 ChangeState(GameState.PickingGum);
-                var gum = await GumManager.Instance.PickGumAsync();
+                var gum = await GumManager.Instance.PickGumAsync(cancellation);
                 CurrentMixture.Gum = gum;
 
                 // 2nd step -- do the rhythm
                 ChangeState(GameState.Chewing);
-                float capacity = await RhythmManager.Instance.ChewAsync(gum);
+                float capacity = await RhythmManager.Instance.ChewAsync(gum, cancellation);
 
                 // 3rd step -- aim and load
                 ChangeState(GameState.Aiming);
-                await AimManager.Instance.AimAsync(CurrentMixture);
+                await AimManager.Instance.AimAsync(CurrentMixture, cancellation);
 
                 CurrentMixture = new GumGasMixture();
             }
