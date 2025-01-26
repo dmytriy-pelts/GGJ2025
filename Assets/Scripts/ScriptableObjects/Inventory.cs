@@ -14,5 +14,7 @@ namespace GumFly.ScriptableObjects
         public GasContainer[] Gases { get; private set; }
 
         public bool HasAnyGumsLeft => Gums.Any(it => it.Count > 0);
+        
+        public bool HasAnyGasLeft => Gases.Any(it => it.Fill > 0.0f);
     }
 }

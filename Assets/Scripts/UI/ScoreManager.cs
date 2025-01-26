@@ -2,6 +2,7 @@
 using GumFly.Utils;
 using LitMotion;
 using LitMotion.Extensions;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ namespace GumFly.UI
         public int RemainingFlies { get; set; }
         public int RemainingGums { get; set; }
         public float RemainingGas { get; set; }
+        public TimeSpan Elapsed { get; set; }
     }
 
     [RequireComponent(typeof(CanvasGroup))]
@@ -67,7 +69,9 @@ namespace GumFly.UI
             string text1 = $@"
 <b>Killed Flies</b>: {stats.TotalFlies - stats.RemainingFlies} / {stats.TotalFlies}
 <b>Remaining Gums</b>: {stats.RemainingGums}
-<b>Remaining Gas</b>: {stats.RemainingGas * 100.0f:0}%";
+<b>Remaining Gas</b>: {stats.RemainingGas * 100.0f:0}%
+<b>Play time</b>: {stats.Elapsed:g}
+";
 
             string text2 = $"<b>Final Score</b>: <u>{score:0}</u>";
 

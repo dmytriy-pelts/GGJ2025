@@ -91,7 +91,11 @@ namespace GumFly
                 .OnInvokeAsync(gameObject.GetCancellationTokenOnDestroy())
                 .ToCancellationToken();
 
-            while (_inventory.HasAnyGumsLeft && FlyManager.Instance.RemainingFlyCount > 0 && !_gameOver)
+            float startTime = Time.time;
+            
+            while (_inventoryInstance.HasAnyGumsLeft
+                   && _inventoryInstance.HasAnyGasLeft
+                   && FlyManager.Instance.RemainingFlyCount > 0 && !_gameOver)
             {
                 try
                 {
@@ -115,13 +119,14 @@ namespace GumFly
                 }
             }
 
+            float endTime = Time.time;
             ChangeState(GameState.Finished);
 
             await UniTask.Delay(1000);
             await AimManager.Instance.WaitUntilBubblesAreGone();
 
-            int remainingGums = _inventory.Gums.Sum(it => it.Count);
-            float remainingGas = _inventory.Gases.Average(it => it.Fill);
+            int remainingGums = _inventoryInstance.Gums.Sum(it => it.Count);
+            float remainingGas = _inventoryInstance.Gases.Average(it => it.Fill);
 
             ScoreManager.Instance.Show(new Stats()
             {
@@ -129,6 +134,7 @@ namespace GumFly
                 TotalFlies = FlyManager.Instance.DeadFlyCount + FlyManager.Instance.RemainingFlyCount,
                 RemainingGas = remainingGas,
                 RemainingGums = remainingGums,
+                Elapsed = TimeSpan.FromSeconds(endTime - startTime)
             });
         }
     }
