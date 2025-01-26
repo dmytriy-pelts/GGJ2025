@@ -14,6 +14,14 @@ namespace GumFly
         [SerializeField]
         private AudioClip _gulpSound;
 
+        [SerializeField]
+        private AudioClip _spitSound;
+        
+        [SerializeField]
+        private AudioClip[] _burstSounds;
+        
+        [SerializeField]
+        private AudioClip[] _eekSounds;
 
         public void PlayGulp()
         {
@@ -33,5 +41,27 @@ namespace GumFly
             var sound = _chewingSounds[Random.Range(0, _chewingSounds.Length)];
             AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, 1.0f);
         }
+
+        public void PlayEek()
+        {
+            if (_eekSounds.Length == 0) return;
+            
+            var sound = _eekSounds[Random.Range(0, _eekSounds.Length)];
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, .3f);
+        }
+
+        public void PlaySplat(Vector3 position)
+        {
+            if (_burstSounds.Length == 0) return;
+            
+            var sound = _burstSounds[Random.Range(0, _burstSounds.Length)];
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, .2f);
+        }
+
+        public void PlaySpit()
+        {
+            AudioSource.PlayClipAtPoint(_spitSound, FaceManager.Instance.transform.position, .2f);
+        } 
+        
     }
 }

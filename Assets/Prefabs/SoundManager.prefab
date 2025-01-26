@@ -53,3 +53,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: cd3f5e72051ce014b9abe913de27cfc2, type: 3}
   - {fileID: 8300000, guid: f70f48ad71a783c4da233c5b270f641f, type: 3}
   _gulpSound: {fileID: 8300000, guid: db12b86c2221e0c47858141ce5d7aa98, type: 3}
+  _spitSound: {fileID: 8300000, guid: 617d18001b682e84585430dea0429d5f, type: 3}
+  _burstSounds:
+  - {fileID: 8300000, guid: 9c32d7213d4f4154e951895973e7581a, type: 3}
+  - {fileID: 8300000, guid: eb8e04378947a74418bfd06f6c0d0322, type: 3}
+  _eekSounds:
+  - {fileID: 8300000, guid: a8b94db393905414facbd51d2f7fd2c8, type: 3}
+  - {fileID: 8300000, guid: db45f7c2413790040a24a04daad5f629, type: 3}
