@@ -38,6 +38,8 @@ public class FlyBehaviour : MonoBehaviour
     public bool IsDead = false;
     public float WeightAccumulated = 0.0f;
 
+    private Color GumColor = Color.white;
+
     void Start()
     {
         _anchorPos = transform.position;
@@ -134,12 +136,12 @@ public class FlyBehaviour : MonoBehaviour
 
     private async void OnCollisionEnter2D(Collision2D other) 
     {
-        Color gumColor = Color.white;
+        Color currentGumColor = Color.white;
 
         if(other.collider.CompareTag("Bubble"))
         {
             BubbleBehaviour bubbleBehaviour = other.collider.GetComponent<BubbleBehaviour>();
-            gumColor = bubbleBehaviour.Mixture.Gum.Color;
+            currentGumColor = bubbleBehaviour.Mixture.Gum.Color;
 
             float weight = bubbleBehaviour.Weight;
             WeightAccumulated += weight;
@@ -168,7 +170,7 @@ public class FlyBehaviour : MonoBehaviour
 
             if(otherFly.IsDead == false) { return; }
             
-            gumColor = otherFly.GumRef.GetComponent<SpriteRenderer>().color;
+            currentGumColor = otherFly.GumColor;
             float weight = otherFly.WeightAccumulated;
             WeightAccumulated += weight;
             IsDead = WeightAccumulated >= _flyProperty.WeightThreshold;
@@ -191,7 +193,8 @@ public class FlyBehaviour : MonoBehaviour
             }
         }
 
-        GumRef.GetComponent<SpriteRenderer>().color = gumColor;
+        GumColor = currentGumColor;
+        GumRef.GetComponent<SpriteRenderer>().color = GumColor;
         GumRef.gameObject.SetActive(true);
     }
 
