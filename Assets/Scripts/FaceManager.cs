@@ -65,13 +65,66 @@ namespace GumFly
                 _chew2.gameObject.SetActive(true);
             }
         }
-        
 
-        private async void OnStateChanged(StateChangeEvent e)
+        public async UniTask MoveToGums()
         {
             var min = Camera.main.ScreenToWorldPoint(Vector3.zero);
             var max = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
 
+            var gumManager = GumManager.Instance.RectTransform;
+
+            // Hide
+            SoundManager.Instance.PlaySwoosh(0);
+            await LMotion.Create(transform.position,
+                    transform.position.WithX(min.x - _rectTransform.rect.width), 1f)
+                .WithEase(Ease.InOutCirc)
+                .BindToPosition(transform);
+
+            await UniTask.Delay(250);
+                    
+            // Re-emerge
+            SoundManager.Instance.PlaySwoosh(1);
+            transform.localScale = Vector3.one * 1.5f;
+
+            var centerBottom = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.min.y));
+            var centerTop = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.max.y + 100));
+            await LMotion.Create(
+                    centerBottom,
+                    centerTop,
+                    0.5f)
+                .BindToPosition(transform);
+        }
+
+        public async UniTask MoveToChewPosition()
+        {
+
+            var translation = RhythmManager.Instance.Cursor.position - _cursorPos.position;
+            var rhythmManager = RhythmManager.Instance.Cursor;
+                    
+            SoundManager.Instance.PlaySwoosh(3);
+            await LMotion.Create(transform.position, transform.position + translation, 0.5f)
+                .WithEase(Ease.InOutCubic)
+                .BindToPosition(transform);
+        }
+
+        public async UniTask MoveToAimingPosition()
+        {
+            var min = Camera.main.ScreenToWorldPoint(Vector3.zero);
+            var max = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
+            SoundManager.Instance.PlaySwoosh(4);
+            await LMotion.Create(transform.position, transform.position.WithY(min.y) + _rectTransform.rect.height * Vector3.down, 0.5f)
+                .BindToPosition(transform);
+
+            transform.localScale = Vector3.one;
+            SoundManager.Instance.PlaySwoosh(5);
+            await LMotion.Create(_initialPosition.WithX(min.x - _rectTransform.rect.width), _initialPosition, 0.5f)
+                .BindToPosition(transform);
+
+        }
+
+        private void OnStateChanged(StateChangeEvent e)
+        {
             if (e.OldState == GameState.Aiming)
             {
                 EnableChewing(false);
@@ -82,50 +135,14 @@ namespace GumFly
                 case GameState.Initializing:
                     break;
                 case GameState.PickingGum:
-                    var gumManager = GumManager.Instance.RectTransform;
-
-                    // Hide
-                    SoundManager.Instance.PlaySwoosh(0);
-                    await LMotion.Create(transform.position,
-                            transform.position.WithX(min.x - _rectTransform.rect.width), 1f)
-                        .WithEase(Ease.InOutCirc)
-                        .BindToPosition(transform);
-
-                    await UniTask.Delay(250);
-                    
-                    // Re-emerge
-                    SoundManager.Instance.PlaySwoosh(1);
-                    transform.localScale = Vector3.one * 1.5f;
-
-                    var centerBottom = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.min.y));
-                    var centerTop = gumManager.TransformPoint(new Vector2(gumManager.rect.center.x, gumManager.rect.max.y + 100));
-                    await LMotion.Create(
-                        centerBottom,
-                        centerTop,
-                        0.5f)
-                        .BindToPosition(transform);
+                 
                     break;
                 case GameState.Chewing:
                     EnableChewing(true);
-                    var translation = RhythmManager.Instance.Cursor.position - _cursorPos.position;
-                    var rhythmManager = RhythmManager.Instance.Cursor;
-                    
-                    SoundManager.Instance.PlaySwoosh(3);
-                    LMotion.Create(transform.position, transform.position + translation, 0.5f)
-                        .WithEase(Ease.InOutCubic)
-                        .BindToPosition(transform);
+           
 
                     break;
                 case GameState.Aiming:
-                    SoundManager.Instance.PlaySwoosh(4);
-                    await LMotion.Create(transform.position, transform.position.WithY(min.y) + _rectTransform.rect.height * Vector3.down, 0.5f)
-                        .BindToPosition(transform);
-
-                    transform.localScale = Vector3.one;
-                    SoundManager.Instance.PlaySwoosh(5);
-                    await LMotion.Create(_initialPosition.WithX(min.x - _rectTransform.rect.width), _initialPosition, 0.5f)
-                        .BindToPosition(transform);
-                    
                     break;
                 case GameState.Finished:
                     break;

@@ -76,9 +76,7 @@ namespace GumFly.UI
 
         public async UniTask<Gum> PickGumAsync()
         {
-            // Wait for face
-            await UniTask.Delay(1000);
-            
+            await FaceManager.Instance.MoveToGums();
             foreach (var package in _gumPackages)
             {
                 package.enabled = true;
