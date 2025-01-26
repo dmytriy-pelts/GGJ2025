@@ -23,6 +23,9 @@ namespace GumFly
         [SerializeField]
         private AudioClip[] _eekSounds;
 
+        [SerializeField]
+        private AudioClip _flySound;
+
         public void PlayGulp()
         {
             AudioSource.PlayClipAtPoint(_gulpSound, Camera.main.transform.position, 0.2f);
@@ -61,7 +64,6 @@ namespace GumFly
         public void PlaySpit()
         {
             AudioSource.PlayClipAtPoint(_spitSound, Camera.main.transform.position, .2f);
-        } 
-        
+        }        
     }
 }

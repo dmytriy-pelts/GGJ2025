@@ -23,6 +23,8 @@ public class FlyBehaviour : MonoBehaviour
     [SerializeField]
     private Vector2 _anchorPos = Vector2.zero;
 
+    private AudioSource _audioSource;
+
     private int _flightDirection;
 
     private bool _isAbleToEvade = false;
@@ -49,6 +51,12 @@ public class FlyBehaviour : MonoBehaviour
         SetFacing();
 
         StartCoroutine(WingFlapping());
+
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.pitch = _flyProperty.SoundPitch + (Random.value - 0.5f) * 0.1f;
+        // _audioSource.PlayDelayed(Random.value);
+        _audioSource.time = _audioSource.clip.length * Random.value;
+        _audioSource.Play();
     }
     [SerializeField]
     Vector2 _previousPos = Vector2.zero;

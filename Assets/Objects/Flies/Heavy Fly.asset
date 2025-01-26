@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Heavy Fly
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Heavy Fly
+  <SoundDeathIndex>k__BackingField: 0
+  SoundPitch: 0.67
   <WeightThreshold>k__BackingField: 30
   <MaxSpeed>k__BackingField: 0.6
   <MaxRange>k__BackingField: 150
