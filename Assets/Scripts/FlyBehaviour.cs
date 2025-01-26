@@ -34,7 +34,9 @@ public class FlyBehaviour : MonoBehaviour
     private float _evasionTotalCooldown = 1.0f;
     private float _evasionCooldown = 1.0f;
 
-    private bool _isAlive = true;
+    private bool _isDead = false;
+    public float WeightAccumulated = 0.0f;
+    public float WeightThreshold = 0.0f;
 
     void Start()
     {
@@ -65,7 +67,9 @@ public class FlyBehaviour : MonoBehaviour
 
     void Update()
     {
-        float time = Time.time;
+        if(!_isDead)
+        {
+            float time = Time.time;
         Vector2 currentPos = this.transform.position;
 
         float totalLength = (_targetPos - _previousPos).magnitude;
@@ -76,7 +80,7 @@ public class FlyBehaviour : MonoBehaviour
         if (distanceAsScale <= 0.1f)
         {
             _flightDirection *= -1;
-            // TODO(dmytriy): Set new target
+            
             _previousPos = _targetPos;
             _targetPos = GetNextRegularTargetPosition(_flightDirection);
 
@@ -95,6 +99,7 @@ public class FlyBehaviour : MonoBehaviour
         this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flightSpeed *  speedScale);
 
         _evasionCooldown -= Time.deltaTime;
+        }
     }
 
     private float getSphericalSpeedFromScale01(float scale)
@@ -119,8 +124,31 @@ public class FlyBehaviour : MonoBehaviour
         if (_isEvading && _isAbleToEvade)
         {
             _targetPos = _evadingPos;
-            // TODO(dmytriy): Set new target
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) 
+    {
+        if(other.collider.CompareTag("Bubble"))
+        {
+            float weight = other.collider.GetComponent<BubbleBehaviour>().Weight;
+            WeightAccumulated += weight;
+
+            _isDead = WeightAccumulated >= WeightThreshold;
+        }
+        else if (other.collider.CompareTag("Fly"))
+        {
+            float weight = other.collider.GetComponent<FlyBehaviour>().WeightAccumulated;
+            WeightAccumulated += weight;
+
+            _isDead = WeightAccumulated >= WeightThreshold;
+        }
+
+        if(_isDead)
+            {
+                // Vector2 diff = other
+                //GetComponent<Rigidbody2D>().AddForce();
+            }
     }
 
     private void SetFacing()
@@ -132,7 +160,7 @@ public class FlyBehaviour : MonoBehaviour
 
     private IEnumerator WingFlapping()
     {
-        while (_isAlive)
+        while (!_isDead)
         {
             yield return new WaitForSeconds(_wingFlapDurationInSec);
 
@@ -148,7 +176,7 @@ public class FlyBehaviour : MonoBehaviour
         Gizmos.color = Color.red;
         if (_isEvading)
         {
-            Gizmos.DrawSphere(_evadingPos, 0.1f);
+            Gizmos.DrawSphere(_evadingPos, 10f);
         }
     }
 }
