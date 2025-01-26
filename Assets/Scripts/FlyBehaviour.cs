@@ -11,6 +11,8 @@ public class FlyBehaviour : MonoBehaviour
     [SerializeField]
     private Transform _wingPivot;
     [SerializeField]
+    public Transform GumRef;
+    [SerializeField]
     private float _wingFlapDurationInSec;
 
     [SerializeField]
@@ -129,12 +131,15 @@ public class FlyBehaviour : MonoBehaviour
 
     private async void OnCollisionEnter2D(Collision2D other) 
     {
-        Debug.Log("Bubble detected! \t" + IsDead );
+        Color gumColor = Color.white;
+
         if(other.collider.CompareTag("Bubble"))
         {
-            float weight = other.collider.GetComponent<BubbleBehaviour>().Weight;
-            WeightAccumulated += weight;
+            BubbleBehaviour bubbleBehaviour = other.collider.GetComponent<BubbleBehaviour>();
+            gumColor = bubbleBehaviour.Mixture.Gum.Color;
 
+            float weight = bubbleBehaviour.Weight;
+            WeightAccumulated += weight;
             IsDead = WeightAccumulated >= WeightThreshold;
             
             if(IsDead)
@@ -147,16 +152,20 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;       
                 
+                _wingPivot.gameObject.SetActive(false);
+
                 this.enabled = false;
             }
         }
         else if (other.collider.CompareTag("Fly"))
         {
-            if(other.collider.GetComponent<FlyBehaviour>().IsDead == false) { return; }
-
-            float weight = other.collider.GetComponent<FlyBehaviour>().WeightAccumulated;
+            FlyBehaviour otherFly = other.collider.GetComponent<FlyBehaviour>();
+            
+            if(otherFly.IsDead == false) { return; }
+            
+            gumColor = otherFly.GumRef.GetComponent<SpriteRenderer>().color;
+            float weight = otherFly.WeightAccumulated;
             WeightAccumulated += weight;
-
             IsDead = WeightAccumulated >= WeightThreshold;
 
             if(IsDead)
@@ -169,9 +178,14 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;
 
+                _wingPivot.gameObject.SetActive(false);
+
                 this.enabled = false;
             }
         }
+
+        GumRef.GetComponent<SpriteRenderer>().color = gumColor;
+        GumRef.gameObject.SetActive(true);
     }
 
     private void SetFacing()
