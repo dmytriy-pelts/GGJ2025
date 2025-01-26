@@ -21,5 +21,5 @@ MonoBehaviour:
   <Radius>k__BackingField: 50
   <Velocity>k__BackingField: 10
   <Color>k__BackingField: {r: 0.4536552, g: 0, b: 0.51572317, a: 1}
-  <Weight>k__BackingField: 0
+  <Weight>k__BackingField: 40
   <Sprite>k__BackingField: {fileID: 21300000, guid: 7fa0c1a8bb883e24581bf23f3421c598, type: 3}
