@@ -19,8 +19,6 @@ public class BubbleBehaviour : MonoBehaviour
 
     private float _timeSinceReleaseInSec = 0.0f;
 
-
-
     private void OnEnable() 
     {
         _initPos = this.transform.position;
