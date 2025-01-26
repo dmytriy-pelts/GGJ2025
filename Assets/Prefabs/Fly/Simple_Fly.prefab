@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flyProperty: {fileID: 11400000, guid: b06b8d4df1cefba4bbc9792996c0c2a8, type: 2}
   _wingPivot: {fileID: 759796908955534102}
-  GumRef: {fileID: 0}
+  GumRef: {fileID: 1560471015144803086}
   _wingFlapDurationInSec: 0.05
   _maxFlightHeight: 240
   _elevationFrequency: 15
