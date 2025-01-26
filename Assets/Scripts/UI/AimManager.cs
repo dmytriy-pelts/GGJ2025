@@ -87,7 +87,8 @@ namespace GumFly.UI
             {
                 if (GameManager.Instance.CurrentMixture.GasAmounts.Count == 0)
                 {
-                    _clickSignals.Value = Signal.Gulp;
+                    // Ignore
+                 //   _clickSignals.Value = Signal.Gulp;
                 }
                 else
                 {
