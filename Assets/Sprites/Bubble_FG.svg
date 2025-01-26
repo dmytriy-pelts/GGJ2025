@@ -30,30 +30,13 @@
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg5" />
-    <mask id="circle-mask">
-        <ellipse
-                style="fill: white"
-                cx="250"
-                cy="250"
-                rx="113"
-                ry="113"
-                id="ellipse3" />
-    </mask>
-  
-  <ellipse
-          style="fill: hsl(0, 0%, 75.1%)"
-          cx="250"
-          cy="250"
-          rx="113"
-          ry="113"
-          id="ellipse3" />
-  
-  <circle
-          mask="url(#circle-mask)"
-          style="fill: hsl(0, 0%, 83%)"
-          cx="228.62198"
-          cy="197.49219"
-          id="ellipse4"
-          r="120" />
 
+  <ellipse
+     style="fill:#ffffff;stroke:#ffffff"
+     cx="180.07008"
+     cy="240.50908"
+     rx="41.162994"
+     ry="28.939997"
+     transform="rotate(-14.99994)"
+     id="ellipse5" />
 </svg>

@@ -1,8 +1,12 @@
+using GumFly;
 using GumFly.Domain;
 using UnityEngine;
 
 public class BubbleBehaviour : MonoBehaviour
 {
+    [SerializeField]
+    private SpriteRenderer _spriteRenderer;
+
     public GumGasMixture Mixture;
     public float Weight;
     public float Velocity;
@@ -25,6 +29,7 @@ public class BubbleBehaviour : MonoBehaviour
     {
         _initPos = this.transform.position;
         _rigidbody = GetComponent<Rigidbody2D>();
+         
     }
 
     private void OnCollisionEnter2D(Collision2D other) 
@@ -39,6 +44,18 @@ public class BubbleBehaviour : MonoBehaviour
     {
         _initPos = this.transform.position;
         IsReleased = true;
+    }
+
+    private void Update()
+    {
+        if(!IsReleased)
+        {
+                  Mixture = GameManager.Instance.CurrentMixture;
+                  if(Mixture.Gum != null)
+                  {
+                    _spriteRenderer.color = Mixture.Gum.Color; 
+                  }
+        }
     }
 
     private void FixedUpdate()
