@@ -158,12 +158,10 @@ public class BubbleFlightPath : MonoBehaviour
                 velocityFromGas += gas.Gas.VelocityScale * gas.Amount;
                 gravityDecayFromGas += gas.Gas.GravityDecay * gas.Amount;
                 bubbleSize += gas.Gas.SizeScale * gas.Amount;
-
-                Debug.Log(bubbleSize);
             }
 
-            _finalVelocity *= MAX_ADDITIONAL_VELOCITY * velocityFromGas;
-            _finalGravityDecay *= MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
+            _finalVelocity = MAX_ADDITIONAL_VELOCITY * velocityFromGas;
+            _finalGravityDecay = MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
             
             if (_bubbleRef)
             {
