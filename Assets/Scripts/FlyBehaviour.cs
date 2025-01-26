@@ -160,7 +160,9 @@ public class FlyBehaviour : MonoBehaviour
                 SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
 
                 _wingPivot.gameObject.SetActive(false);
-
+                GumColor = currentGumColor;
+        GumRef.GetComponent<SpriteRenderer>().color = GumColor;
+        GumRef.gameObject.SetActive(true);
                 this.enabled = false;
             }
         }
@@ -186,6 +188,10 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.gravityScale = 10f;
 
                 SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
+
+                GumColor = currentGumColor;
+                GumRef.GetComponent<SpriteRenderer>().color = GumColor;
+                GumRef.gameObject.SetActive(true);
 
                 _wingPivot.gameObject.SetActive(false);
 
