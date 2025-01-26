@@ -25,7 +25,7 @@ namespace GumFly
 
         public void PlayGulp()
         {
-            AudioSource.PlayClipAtPoint(_gulpSound, Camera.main.transform.position, 0.5f);
+            AudioSource.PlayClipAtPoint(_gulpSound, Camera.main.transform.position, 0.2f);
         }
 
         public void PlaySwoosh(int i, float volume = 1.0f)
@@ -60,7 +60,7 @@ namespace GumFly
 
         public void PlaySpit()
         {
-            AudioSource.PlayClipAtPoint(_spitSound, FaceManager.Instance.transform.position, .2f);
+            AudioSource.PlayClipAtPoint(_spitSound, Camera.main.transform.position, .2f);
         } 
         
     }

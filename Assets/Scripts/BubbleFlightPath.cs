@@ -91,6 +91,8 @@ public class BubbleFlightPath : MonoBehaviour
 
     public void Shoot()
     {
+        SoundManager.Instance.PlaySpit();
+        
         _bubbleRef.Mixture = _gameManager.CurrentMixture;
         _bubbleRef.PathLength = _pathLength;
         _bubbleRef.Weight = 10; //_gameManager.CurrentMixture.Gum.Weight;
