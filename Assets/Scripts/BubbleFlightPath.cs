@@ -6,19 +6,21 @@ using UnityEngine;
 public class BubbleFlightPath : MonoBehaviour
 {
     [SerializeField]
-    private Transform _bubbleRef;
+    private Transform _bubblePrefab;
     [SerializeField]
-    private Vector2 _v0;
+    private static Vector2 _v0 = new Vector2(1500, 185);
     [SerializeField, Range(0.0f, 1.5f)]
     private float _gravityReversal = 0f;
     [SerializeField]
     private float _bubbleFillScale = 2.0f;
 
-    private const float _angle = 84.0f;
-    private const float _gravity = 2.3f;
-    private const float _totalTime = 12.0f;
-    private const float _reversalForceY = 17.0f;
-    private const float _gravityChangeConst = 6.936f;
+    private BubbleBehaviour _bubbleRef;
+
+    private static float _angle = 84.0f;
+    private static float _gravity = 2.3f;
+    private static float _totalTime = 12.0f;
+    private static float _reversalForceY = 17.0f;
+    private static float _gravityChangeConst = 6.936f;
 
     private float _bubbleInitScale;
     private GameManager _gameManager;
@@ -42,13 +44,13 @@ public class BubbleFlightPath : MonoBehaviour
     [SerializeField]
     private Vector2 _maxBounds = Vector2.zero;
 
-    private Vector2 getPostition(float t, float velocity, float gravityDecay)
+    public static Vector2 GetPostition(float t, float velocity, float gravityDecay)
     {
         // NOTE(dmytriy): two parameter not in use yet
-        float ajustedGravity = (_gravityReversal > 0.0f) ? _gravity + _gravityReversal * _gravityChangeConst : _gravity;
-        Vector2 _v0Final = _v0;
+        float ajustedGravity = _gravity + gravityDecay * _gravityChangeConst;
+        Vector2 _v0Final = _v0 + new Vector2(velocity, 0f);
         float x = (_v0Final.x * Mathf.Cos(_angle * Mathf.Deg2Rad)) * t;
-        float y = (_v0Final.y * Mathf.Sin(_angle * Mathf.Deg2Rad)) * t - ((ajustedGravity - _gravityReversal * t) * t * t * _reversalForceY) / 2f;
+        float y = (_v0Final.y * Mathf.Sin(_angle * Mathf.Deg2Rad)) * t - ((ajustedGravity - gravityDecay * t) * t * t * _reversalForceY) / 2f;
 
         return new Vector2(x, y);
     }
@@ -60,25 +62,46 @@ public class BubbleFlightPath : MonoBehaviour
         _lineRenderer.positionCount = points.Length;
         _lineRenderer.SetPositions(points);
         //_bubbleRef.gameObject.SetActive(false);
-        _bubbleFillScale = _bubbleRef.localScale.x;
+        _bubbleFillScale = _bubblePrefab.localScale.x;
 
         _maxBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
     }
 
+    private void InstantiateBubble()
+    {
+        _bubbleRef = Instantiate(_bubblePrefab, this.transform.position, Quaternion.identity).GetComponent<BubbleBehaviour>();
+    }
+
     private void Update()
     {
-        /*
         if (_gameManager.State == GameState.Aiming)
         {
-            _bubbleRef.gameObject.SetActive(true);
+            InstantiateBubble();
         }
-*/
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            _isBubbleFlying = true;
+            if(_bubbleRef == null)
+            {
+                InstantiateBubble();
+            }
+
+            //_isBubbleFlying = true;
             _releasePoint = this.transform.position;
+
+            _bubbleRef.Mixture = _gameManager.CurrentMixture;
+            _bubbleRef.PathLength = _pathLength;
+            _bubbleRef.Weight = 10; //_gameManager.CurrentMixture.Gum.Weight;
+            _bubbleRef.Velocity = _finalVelocity;
+            _bubbleRef.GravityDecay = _finalGravityDecay;
+            _bubbleRef.BubbleDistancePerSec = _bubbleDefaultDistancePerSec;
+            _bubbleRef.IsReleased = true;
+
+            // Forget bubble
+            _bubbleRef = null;
         }
-        if (!_isBubbleFlying)
+
+        //if (!_isBubbleFlying)
         {
             GumGasMixture gasMix = _gameManager.CurrentMixture;
 
@@ -96,7 +119,7 @@ public class BubbleFlightPath : MonoBehaviour
             float tStep = 0.2f;
             for (int stepIndex = 1; stepIndex < points.Length; stepIndex++)
             {
-                Vector2 pos = getPostition((stepIndex * tStep), _finalVelocity, _finalGravityDecay);
+                Vector2 pos = GetPostition((stepIndex * tStep), _finalVelocity, _finalGravityDecay);
                 points[stepIndex] = pos;
                 _pathLength = (points[stepIndex - 1] - points[stepIndex]).magnitude;
                 pos += (Vector2) this.transform.position;
@@ -110,12 +133,13 @@ public class BubbleFlightPath : MonoBehaviour
 
             //_bubbleRef.localScale = Vector3.one * (_bubbleInitScale + _bubbleFillScale * bubbleSize);
         }
+        /*
         else
         {
             // _bubbleFlyTimeInSec += Time.deltaTime;
             float timeStep = Time.deltaTime * (_bubbleDefaultDistancePerSec / _pathLength);
             _bubbleFlyTimeInSec += timeStep;// (_lineRenderer.positionCount * 0.2f / _bubbleDefaultDistancePerSec) * Time.deltaTime;
-            Vector2 pos = getPostition(_bubbleFlyTimeInSec, _finalVelocity, _finalGravityDecay);
+            Vector2 pos = GetPostition(_bubbleFlyTimeInSec, _finalVelocity, _finalGravityDecay);
             Vector2 adjustedToReleasePointPos = pos + _releasePoint;
             _bubbleDistanceFlew += ((Vector2)_bubbleRef.transform.position - adjustedToReleasePointPos).magnitude;
             Debug.Log(_bubbleDistanceFlew);
@@ -130,5 +154,6 @@ public class BubbleFlightPath : MonoBehaviour
                 // TODO(dmytriy): Reset everything bubble related
             }
         }
+        */
     }
 }

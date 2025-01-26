@@ -28,6 +28,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bubble
       objectReference: {fileID: 0}
+    - target: {fileID: -3888481672020999207, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -3888481672020999207, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
+      propertyPath: m_TagString
+      value: Bubble
+      objectReference: {fileID: 0}
     - target: {fileID: 8742538545776668643, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
       propertyPath: m_LocalScale.x
       value: 20
@@ -42,11 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8742538545776668643, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 163.4
+      value: 679
       objectReference: {fileID: 0}
     - target: {fileID: 8742538545776668643, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 458.9
+      value: 295
       objectReference: {fileID: 0}
     - target: {fileID: 8742538545776668643, guid: 62f7780250c840b19d524f337ae1f02b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -113,7 +121,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 848329711544489236}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -177,3 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c840e830665a0437596f98026429ee61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Weight: 0
+  Velocity: 0
+  GravityDecay: 0
+  BubbleDistancePerSec: 0
+  PathLength: 0
+  IsReleased: 0

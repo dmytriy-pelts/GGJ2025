@@ -22,6 +22,9 @@ namespace GumFly.ScriptableObjects
         
         [field: SerializeField]
         public Color Color { get; private set; }
+
+        [field: SerializeField]
+        public float Weight { get; private set; }
         
         [field:SerializeField]
         public Sprite Sprite { get; private set; }
