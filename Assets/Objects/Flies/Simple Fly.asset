@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Simple Fly
   <WeightThreshold>k__BackingField: 10
-  <MaxSpeed>k__BackingField: 2
+  <MaxSpeed>k__BackingField: 1
+  <MaxRange>k__BackingField: 200
+  <IsFriendly>k__BackingField: 0
   <IsAbleToEvade>k__BackingField: 0
   <DetectionRadius>k__BackingField: 0
   <EvasionRadius>k__BackingField: 0
   <MaxEvasionSpeed>k__BackingField: 0
+  <EvasionTotalCooldownInSec>k__BackingField: 0

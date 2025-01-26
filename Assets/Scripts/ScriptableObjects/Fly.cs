@@ -17,6 +17,9 @@ namespace GumFly.ScriptableObjects
         public float MaxSpeed { get; private set; }
 
         [field: SerializeField]
+        public float MaxRange { get; private set; }
+
+        [field: SerializeField]
         public bool IsFriendly { get; private set; }
 
         [field: SerializeField]

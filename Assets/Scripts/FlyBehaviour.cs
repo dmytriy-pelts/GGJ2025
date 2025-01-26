@@ -16,16 +16,11 @@ public class FlyBehaviour : MonoBehaviour
     private float _wingFlapDurationInSec;
 
     [SerializeField]
-    private float _flightRadius = 2.0f;
-    [SerializeField]
     private float _maxFlightHeight;
     [SerializeField]
     private float _elevationFrequency;
     [SerializeField]
     private Vector2 _anchorPos = Vector2.zero;
-
-    [SerializeField]
-    private float _flightSpeed = 1.0f;
 
     private int _flightDirection;
 
@@ -62,7 +57,7 @@ public class FlyBehaviour : MonoBehaviour
     private Vector2 GetNextRegularTargetPosition(float dir)
     {
         Vector3 newPos = _anchorPos;
-        newPos.x = _anchorPos.x + (_flightRadius * dir);
+        newPos.x = _anchorPos.x + (_flyProperty.MaxRange * dir);
         
         return newPos;
     }
@@ -98,7 +93,7 @@ public class FlyBehaviour : MonoBehaviour
             nextPos.y += elevation;
         }
 
-        this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flightSpeed *  speedScale);
+        this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flyProperty.MaxSpeed *  speedScale);
         _evasionCooldown -= Time.deltaTime;
         }
     }
@@ -160,7 +155,7 @@ public class FlyBehaviour : MonoBehaviour
         else if (other.collider.CompareTag("Fly"))
         {
             FlyBehaviour otherFly = other.collider.GetComponent<FlyBehaviour>();
-            
+
             if(otherFly.IsDead == false) { return; }
             
             gumColor = otherFly.GumRef.GetComponent<SpriteRenderer>().color;
