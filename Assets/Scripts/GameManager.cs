@@ -3,7 +3,9 @@ using GumFly.Domain;
 using GumFly.ScriptableObjects;
 using GumFly.UI;
 using GumFly.Utils;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -84,25 +86,33 @@ namespace GumFly
         {
             await UniTask.Delay(2000);
             
-            var cancellation = FlyManager.Instance.AllFliesDead.OnInvokeAsync(gameObject.GetCancellationTokenOnDestroy())
+            FlyManager.Instance.AllFliesDead.AddListener(() => Debug.Log("All Flies Dead"));
+            var cancellation = FlyManager.Instance.AllFliesDead
+                .OnInvokeAsync(gameObject.GetCancellationTokenOnDestroy())
                 .ToCancellationToken();
 
             while (_inventory.HasAnyGumsLeft && FlyManager.Instance.RemainingFlyCount > 0 && !_gameOver)
             {
-                // 1st step -- pick a gum
-                ChangeState(GameState.PickingGum);
-                var gum = await GumManager.Instance.PickGumAsync(cancellation);
-                CurrentMixture.Gum = gum;
+                try
+                {
+                    // 1st step -- pick a gum
+                    ChangeState(GameState.PickingGum);
+                    var gum = await GumManager.Instance.PickGumAsync(cancellation);
+                    CurrentMixture.Gum = gum;
 
-                // 2nd step -- do the rhythm
-                ChangeState(GameState.Chewing);
-                float capacity = await RhythmManager.Instance.ChewAsync(gum, cancellation);
+                    // 2nd step -- do the rhythm
+                    ChangeState(GameState.Chewing);
+                    float capacity = await RhythmManager.Instance.ChewAsync(gum, cancellation);
 
-                // 3rd step -- aim and load
-                ChangeState(GameState.Aiming);
-                await AimManager.Instance.AimAsync(CurrentMixture, cancellation);
+                    // 3rd step -- aim and load
+                    ChangeState(GameState.Aiming);
+                    await AimManager.Instance.AimAsync(CurrentMixture, cancellation);
 
-                CurrentMixture = new GumGasMixture();
+                    CurrentMixture = new GumGasMixture();
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
 
             ChangeState(GameState.Finished);

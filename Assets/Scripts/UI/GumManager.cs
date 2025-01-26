@@ -1,10 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
-using GumFly.Domain;
+using Cysharp.Threading.Tasks.Linq;
 using GumFly.Extensions;
 using GumFly.ScriptableObjects;
 using GumFly.UI.Gums;
 using GumFly.Utils;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -27,9 +26,9 @@ namespace GumFly.UI
 
         private List<GumPackageBehaviour> _gumPackages = new List<GumPackageBehaviour>();
 
-        private UniTaskCompletionSource<Gum> _selectedGum = new UniTaskCompletionSource<Gum>();
         private CanvasGroup _canvasGroup;
 
+        private AsyncReactiveProperty<Gum> _selectedGum = new AsyncReactiveProperty<Gum>(null);
         public void Initialize(Inventory inventory)
         {
             Debug.Log("Initializing gas manager", this);
@@ -46,7 +45,7 @@ namespace GumFly.UI
 
                 instance.GumPicked.AddListener((gum) =>
                 {
-                    _selectedGum.TrySetResult(gum);
+                    _selectedGum.Value = gum;
                 });
 
                 instance.enabled = false;
@@ -75,8 +74,7 @@ namespace GumFly.UI
                 package.enabled = true;
             }
 
-            var gum = await _selectedGum.Task.AttachExternalCancellation(cancellation);
-            _selectedGum = new UniTaskCompletionSource<Gum>();
+            var gum = await _selectedGum.FirstAsync(it => it != null, cancellation);
             
             await UniTask.Delay(1000, cancellationToken: cancellation);
 

@@ -19,6 +19,7 @@ public class FlyManager : MonoSingleton<FlyManager>
     private float _inwardOffsetY = 200.0f;
 
     private List<FlyBehaviour> _flyList = new List<FlyBehaviour>();
+    private bool _allFliesDeadSent = false;
 
     public Level LevelConfig => levelConfig;
 
@@ -49,8 +50,9 @@ public class FlyManager : MonoSingleton<FlyManager>
             }
         }
 
-        if(isAllDead)
+        if(isAllDead && !_allFliesDeadSent)
         {
+            _allFliesDeadSent = true;
             AllFliesDead.Invoke();
         }
     }
