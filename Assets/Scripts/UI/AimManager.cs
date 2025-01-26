@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks.Linq;
 using GumFly.Domain;
 using GumFly.Utils;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,6 +16,18 @@ namespace GumFly.UI
         private AsyncReactiveProperty<AsyncUnit>
             _clickSignals = new AsyncReactiveProperty<AsyncUnit>(AsyncUnit.Default);
 
+        public async UniTask WaitUntilBubblesAreGone()
+        {
+            while (AnyBubblesAirborne())
+            {
+                await UniTask.Delay(1000);
+            }
+        }
+
+        private bool AnyBubblesAirborne()
+        {
+            return FindObjectsOfType<BubbleBehaviour>().Any(it => it.IsReleased);
+        }
 
         private void Start()
         {
