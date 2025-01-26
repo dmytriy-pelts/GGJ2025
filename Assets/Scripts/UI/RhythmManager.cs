@@ -63,16 +63,18 @@ namespace GumFly.UI
 
         public async UniTask<float> ChewAsync(Gum gum)
         {
-            // Wait for face
-            await FaceManager.Instance.MoveToChewPosition();
-            
             GameManager.Instance.CurrentMixture.Capacity = 0.0f;
             var timelines = gum.Rhythm.Timelines;
             if (timelines.Length == 0)
             {
+                await FaceManager.Instance.MoveToAimingPosition();
                 GameManager.Instance.CurrentMixture.Capacity = 1.0f;
                 return 1.0f;
             }
+            
+            // Wait for face
+            await FaceManager.Instance.MoveToChewPosition();
+
 
             var timeline = timelines[Random.Range(0, timelines.Length)];
             _processor.Initialize(timeline);
