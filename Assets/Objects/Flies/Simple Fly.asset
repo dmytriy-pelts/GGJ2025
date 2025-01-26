@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Simple Fly
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Simple Fly
+  <SoundDeathIndex>k__BackingField: 1
   <WeightThreshold>k__BackingField: 10
   <MaxSpeed>k__BackingField: 1
   <MaxRange>k__BackingField: 200

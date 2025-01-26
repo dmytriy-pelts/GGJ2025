@@ -42,11 +42,11 @@ namespace GumFly
             AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, 1.0f);
         }
 
-        public void PlayEek()
+        public void PlayEek(int soundIndex)
         {
             if (_eekSounds.Length == 0) return;
             
-            var sound = _eekSounds[Random.Range(0, _eekSounds.Length)];
+            var sound = _eekSounds[soundIndex];// Random.Range(0, _eekSounds.Length)];
             AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position, .3f);
         }
 

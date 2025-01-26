@@ -11,6 +11,9 @@ namespace GumFly.ScriptableObjects
         public string Name { get; private set; }
 
         [field: SerializeField]
+        public int SoundDeathIndex { get; private set; }
+
+        [field: SerializeField]
         public float WeightThreshold { get; private set; }
 
         [field: SerializeField]

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using GumFly;
 using GumFly.ScriptableObjects;
 using System.Collections;
 using UnityEngine;
@@ -147,6 +148,8 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;       
                 
+                SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
+
                 _wingPivot.gameObject.SetActive(false);
 
                 this.enabled = false;
@@ -172,6 +175,8 @@ public class FlyBehaviour : MonoBehaviour
                 await UniTask.DelayFrame(2, PlayerLoopTiming.FixedUpdate);
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;
+
+                SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
 
                 _wingPivot.gameObject.SetActive(false);
 
