@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Alpenluft
   <Color>k__BackingField: {r: 1, g: 0.68825614, b: 0, a: 1}
-  <VelocityScale>k__BackingField: 0.2
-  <Gravity>k__BackingField: 0
+  <VelocityScale>k__BackingField: 1
+  <SizeScale>k__BackingField: 1
   <GravityDecay>k__BackingField: 0
