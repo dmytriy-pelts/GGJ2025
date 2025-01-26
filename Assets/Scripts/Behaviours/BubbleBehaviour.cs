@@ -25,11 +25,10 @@ public class BubbleBehaviour : MonoBehaviour
 
     private Rigidbody2D _rigidbody;
 
-    private void OnEnable() 
+    private void OnEnable()
     {
         _initPos = this.transform.position;
         _rigidbody = GetComponent<Rigidbody2D>();
-         
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -48,13 +47,22 @@ public class BubbleBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if(!IsReleased)
+        if (!IsReleased)
         {
-                  Mixture = GameManager.Instance.CurrentMixture;
-                  if(Mixture.Gum != null)
-                  {
-                    _spriteRenderer.color = Mixture.Gum.Color; 
-                  }
+            Mixture = GameManager.Instance.CurrentMixture;
+            if (Mixture.Gum != null)
+            {
+                _spriteRenderer.color = Mixture.Gum.Color;
+            }
+        }
+        else
+        {
+            var vp = Camera.main.WorldToViewportPoint(this.transform.position);
+            if (vp.y < -0.25f || vp.x > 1.25f)
+            {
+                Debug.Log("Destroy bubble");
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -74,18 +82,6 @@ public class BubbleBehaviour : MonoBehaviour
         if (_timeSinceReleaseInSec > 10f)
         {
             Destroy(this.gameObject);
-        }
-    }
-
-    private void Update()
-    {
-        if (!IsReleased) return;
-        
-        var vp = Camera.main.WorldToViewportPoint(this.transform.position);
-        if (vp.y < -0.25f || vp.x > 1.25f)
-        {
-            Debug.Log("Destroy bubble");
-            Destroy(gameObject);
         }
     }
 }
