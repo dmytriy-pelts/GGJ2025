@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Oxygen
   <Color>k__BackingField: {r: 1, g: 1, b: 0.7058824, a: 0.67058825}
-  <VelocityScale>k__BackingField: 0.1
-  <Gravity>k__BackingField: 0
-  <GravityDecay>k__BackingField: 0.05
+  <VelocityScale>k__BackingField: 0.5
+  <SizeScale>k__BackingField: 3
+  <GravityDecay>k__BackingField: 0

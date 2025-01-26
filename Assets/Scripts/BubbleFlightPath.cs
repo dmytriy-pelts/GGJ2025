@@ -13,8 +13,7 @@ public class BubbleFlightPath : MonoBehaviour
     [SerializeField, Range(0.0f, 1.5f)]
     private float _gravityReversal = 0f;
 
-    [SerializeField]
-    private float _bubbleFillScale = 2.0f;
+    private float _bubbleFillScale = 15.0f;
 
     private BubbleBehaviour _bubbleRef;
 
@@ -69,7 +68,7 @@ public class BubbleFlightPath : MonoBehaviour
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = points.Length;
         _lineRenderer.SetPositions(points);
-        _bubbleFillScale = _bubblePrefab.localScale.x;
+        _bubbleInitScale = _bubblePrefab.localScale.x;
 
         _maxBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
     }
@@ -97,7 +96,7 @@ public class BubbleFlightPath : MonoBehaviour
         
         _bubbleRef.Mixture = _gameManager.CurrentMixture;
         _bubbleRef.PathLength = _pathLength;
-        _bubbleRef.Weight = 10; //_gameManager.CurrentMixture.Gum.Weight;
+        _bubbleRef.Weight = _gameManager.CurrentMixture.Gum.Weight;
         _bubbleRef.Velocity = _finalVelocity;
         _bubbleRef.GravityDecay = _finalGravityDecay;
         _bubbleRef.BubbleDistancePerSec = _bubbleDefaultDistancePerSec;
@@ -158,11 +157,11 @@ public class BubbleFlightPath : MonoBehaviour
             {
                 velocityFromGas += gas.Gas.VelocityScale * gas.Amount;
                 gravityDecayFromGas += gas.Gas.GravityDecay * gas.Amount;
-                bubbleSize += gas.Amount;
+                bubbleSize += gas.Gas.SizeScale * gas.Amount;
             }
 
-            _finalVelocity *= MAX_ADDITIONAL_VELOCITY * velocityFromGas;
-            _finalGravityDecay *= MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
+            _finalVelocity = MAX_ADDITIONAL_VELOCITY * velocityFromGas;
+            _finalGravityDecay = MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
             
             if (_bubbleRef)
             {
@@ -184,8 +183,6 @@ public class BubbleFlightPath : MonoBehaviour
                     break;
                 }
             }
-
-            //_bubbleRef.localScale = Vector3.one * (_bubbleInitScale + _bubbleFillScale * bubbleSize);
         }
         /*
         else
