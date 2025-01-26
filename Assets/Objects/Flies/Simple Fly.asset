@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Simple Fly
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Simple Fly
+  <SoundDeathIndex>k__BackingField: 1
+  SoundPitch: 1.89
   <WeightThreshold>k__BackingField: 10
-  <MaxSpeed>k__BackingField: 2
+  <MaxSpeed>k__BackingField: 1
+  <MaxRange>k__BackingField: 200
+  <IsFriendly>k__BackingField: 0
   <IsAbleToEvade>k__BackingField: 0
   <DetectionRadius>k__BackingField: 0
   <EvasionRadius>k__BackingField: 0
   <MaxEvasionSpeed>k__BackingField: 0
+  <EvasionTotalCooldownInSec>k__BackingField: 0

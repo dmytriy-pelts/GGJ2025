@@ -15,3 +15,5 @@ MonoBehaviour:
   <flyTypesInLevel>k__BackingField:
   - amount: 5
     reference: {fileID: 2156257765938942366, guid: 1ae910a16ff866e4db60817af7983156, type: 3}
+  - amount: 3
+    reference: {fileID: 8396002010417212562, guid: f93d859e0b10a4d92bdf62a4fc7ac1d2, type: 3}

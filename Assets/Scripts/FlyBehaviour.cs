@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using GumFly;
 using GumFly.ScriptableObjects;
 using System.Collections;
 using UnityEngine;
@@ -11,10 +12,10 @@ public class FlyBehaviour : MonoBehaviour
     [SerializeField]
     private Transform _wingPivot;
     [SerializeField]
+    public Transform GumRef;
+    [SerializeField]
     private float _wingFlapDurationInSec;
 
-    [SerializeField]
-    private float _flightRadius = 2.0f;
     [SerializeField]
     private float _maxFlightHeight;
     [SerializeField]
@@ -22,8 +23,7 @@ public class FlyBehaviour : MonoBehaviour
     [SerializeField]
     private Vector2 _anchorPos = Vector2.zero;
 
-    [SerializeField]
-    private float _flightSpeed = 1.0f;
+    private AudioSource _audioSource;
 
     private int _flightDirection;
 
@@ -51,6 +51,12 @@ public class FlyBehaviour : MonoBehaviour
         SetFacing();
 
         StartCoroutine(WingFlapping());
+
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.pitch = _flyProperty.SoundPitch + (Random.value - 0.5f) * 0.1f;
+        // _audioSource.PlayDelayed(Random.value);
+        _audioSource.time = _audioSource.clip.length * Random.value;
+        _audioSource.Play();
     }
     [SerializeField]
     Vector2 _previousPos = Vector2.zero;
@@ -60,7 +66,7 @@ public class FlyBehaviour : MonoBehaviour
     private Vector2 GetNextRegularTargetPosition(float dir)
     {
         Vector3 newPos = _anchorPos;
-        newPos.x = _anchorPos.x + (_flightRadius * dir);
+        newPos.x = _anchorPos.x + (_flyProperty.MaxRange * dir);
         
         return newPos;
     }
@@ -96,7 +102,7 @@ public class FlyBehaviour : MonoBehaviour
             nextPos.y += elevation;
         }
 
-        this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flightSpeed *  speedScale);
+        this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flyProperty.MaxSpeed *  speedScale);
         _evasionCooldown -= Time.deltaTime;
         }
     }
@@ -129,12 +135,15 @@ public class FlyBehaviour : MonoBehaviour
 
     private async void OnCollisionEnter2D(Collision2D other) 
     {
-        Debug.Log("Bubble detected! \t" + IsDead );
+        Color gumColor = Color.white;
+
         if(other.collider.CompareTag("Bubble"))
         {
-            float weight = other.collider.GetComponent<BubbleBehaviour>().Weight;
-            WeightAccumulated += weight;
+            BubbleBehaviour bubbleBehaviour = other.collider.GetComponent<BubbleBehaviour>();
+            gumColor = bubbleBehaviour.Mixture.Gum.Color;
 
+            float weight = bubbleBehaviour.Weight;
+            WeightAccumulated += weight;
             IsDead = WeightAccumulated >= WeightThreshold;
             
             if(IsDead)
@@ -147,16 +156,22 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;       
                 
+                SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
+
+                _wingPivot.gameObject.SetActive(false);
+
                 this.enabled = false;
             }
         }
         else if (other.collider.CompareTag("Fly"))
         {
-            if(other.collider.GetComponent<FlyBehaviour>().IsDead == false) { return; }
+            FlyBehaviour otherFly = other.collider.GetComponent<FlyBehaviour>();
 
-            float weight = other.collider.GetComponent<FlyBehaviour>().WeightAccumulated;
+            if(otherFly.IsDead == false) { return; }
+            
+            gumColor = otherFly.GumRef.GetComponent<SpriteRenderer>().color;
+            float weight = otherFly.WeightAccumulated;
             WeightAccumulated += weight;
-
             IsDead = WeightAccumulated >= WeightThreshold;
 
             if(IsDead)
@@ -169,9 +184,16 @@ public class FlyBehaviour : MonoBehaviour
                 rigid.mass = 100;
                 rigid.gravityScale = 10f;
 
+                SoundManager.Instance.PlayEek(_flyProperty.SoundDeathIndex);
+
+                _wingPivot.gameObject.SetActive(false);
+
                 this.enabled = false;
             }
         }
+
+        GumRef.GetComponent<SpriteRenderer>().color = gumColor;
+        GumRef.gameObject.SetActive(true);
     }
 
     private void SetFacing()

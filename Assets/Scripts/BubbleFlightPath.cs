@@ -24,6 +24,9 @@ public class BubbleFlightPath : MonoBehaviour
     private static float _reversalForceY = 17.0f;
     private static float _gravityChangeConst = 6.936f;
 
+    private const float MAX_ADDITIONAL_VELOCITY = 800f;
+    private const float MAX_ADDITIONAL_GRAVITY_DACAY = 1.5f;
+
     private float _bubbleInitScale;
     private GameManager _gameManager;
     private LineRenderer _lineRenderer;
@@ -66,7 +69,6 @@ public class BubbleFlightPath : MonoBehaviour
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = points.Length;
         _lineRenderer.SetPositions(points);
-        //_bubbleRef.gameObject.SetActive(false);
         _bubbleFillScale = _bubblePrefab.localScale.x;
 
         _maxBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
@@ -149,16 +151,19 @@ public class BubbleFlightPath : MonoBehaviour
             GumGasMixture gasMix = _gameManager.CurrentMixture;
 
             _pathLength = 0.0f;
-            _finalVelocity = 0.0f;
-            _finalGravityDecay = 0.0f;
+            float velocityFromGas = 0.0f;
+            float gravityDecayFromGas = 0.0f;
             float bubbleSize = 0.0f;
             foreach (var gas in gasMix.GasAmounts)
             {
-                _finalVelocity += gas.Gas.VelocityScale * gas.Amount;
-                _finalGravityDecay += gas.Gas.GravityDecay * gas.Amount;
+                velocityFromGas += gas.Gas.VelocityScale * gas.Amount;
+                gravityDecayFromGas += gas.Gas.GravityDecay * gas.Amount;
                 bubbleSize += gas.Amount;
             }
 
+            _finalVelocity *= MAX_ADDITIONAL_VELOCITY * velocityFromGas;
+            _finalGravityDecay *= MAX_ADDITIONAL_GRAVITY_DACAY * gravityDecayFromGas;
+            
             if (_bubbleRef)
             {
                 _bubbleRef.transform.position = transform.position;
