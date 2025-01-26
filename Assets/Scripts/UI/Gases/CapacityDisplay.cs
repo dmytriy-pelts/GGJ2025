@@ -14,7 +14,11 @@ namespace GumFly.UI.Gases
 
         public void Update()
         {
-            _image.fillAmount = GameManager.Instance.CurrentMixture.Capacity;
+            _image.fillAmount = Mathf.Lerp(
+                _image.fillAmount,
+                GameManager.Instance.CurrentMixture.Capacity,
+                Time.deltaTime * 6f);
+            
             _remaining.fillAmount = GameManager.Instance.CurrentMixture.Capacity
                                     - GameManager.Instance.CurrentMixture.RemainingCapacity;
         }
