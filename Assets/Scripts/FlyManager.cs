@@ -16,7 +16,7 @@ public class FlyManager : MonoBehaviour
     [SerializeField]
     private float _inwardOffsetY = 200.0f;
 
-    private List<FlyBehaviour> _flyList;
+    private List<FlyBehaviour> _flyList = new List<FlyBehaviour>();
 
     private void Start()
     {

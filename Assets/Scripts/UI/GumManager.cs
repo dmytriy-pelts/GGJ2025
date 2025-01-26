@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace GumFly.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class GumManager : MonoSingleton<GumManager>
     {
         private Inventory _inventory;
@@ -26,6 +27,7 @@ namespace GumFly.UI
         private List<GumPackageBehaviour> _gumPackages = new List<GumPackageBehaviour>();
 
         private UniTaskCompletionSource<Gum> _selectedGum = new UniTaskCompletionSource<Gum>();
+        private CanvasGroup _canvasGroup;
 
         public void Initialize(Inventory inventory)
         {
@@ -51,11 +53,22 @@ namespace GumFly.UI
             }
         }
 
+        private void Start()
+        {
+            GameManager.Instance.StateChanged.AddListener(OnStateChanged);
+            _canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup.alpha = 0.5f;
+        }
+
+        private void OnStateChanged(StateChangeEvent e)
+        {
+            Debug.Log(e.NewState);
+            _canvasGroup.alpha = e.NewState == GameState.PickingGum ? 1.0f : 0.5f;
+        }
+
         public async UniTask<Gum> PickGumAsync()
         {
-            // Wait for face
-            await UniTask.Delay(1000);
-            
+            await FaceManager.Instance.MoveToGums();
             foreach (var package in _gumPackages)
             {
                 package.enabled = true;
@@ -63,6 +76,8 @@ namespace GumFly.UI
 
             var gum = await _selectedGum.Task;
             _selectedGum = new UniTaskCompletionSource<Gum>();
+
+            await UniTask.Delay(1000);
             
             foreach (var package in _gumPackages)
             {

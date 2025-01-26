@@ -26,6 +26,8 @@ namespace GumFly
     [DefaultExecutionOrder(-1000)]
     public class GameManager : MonoSingleton<GameManager>
     {
+        public static Vector2 TARGET_RESOLUTION = new Vector2(1920, 1080);
+        
         public GameState State { get; private set; } = GameState.Initializing;
         
         /// <summary>
