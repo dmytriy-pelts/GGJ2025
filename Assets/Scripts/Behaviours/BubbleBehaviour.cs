@@ -19,6 +19,8 @@ public class BubbleBehaviour : MonoBehaviour
 
     private float _timeSinceReleaseInSec = 0.0f;
 
+
+
     private void OnEnable() 
     {
         _initPos = this.transform.position;
@@ -32,15 +34,19 @@ public class BubbleBehaviour : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void Update()
+    private void FixedUpdate()
     {
         if(IsReleased && !_isPopped)
         {  
+            Vector2 oldPos = this.transform.position;
             _timeSinceReleaseInSec += Time.deltaTime;
             float timeStep = Time.deltaTime * (BubbleDistancePerSec / PathLength);
             _flightTime += timeStep;
             Vector2 newPos = BubbleFlightPath.GetPostition(_flightTime, Velocity, GravityDecay);
-            this.transform.position = newPos + _initPos;
+            // this.transform.position = newPos + _initPos;
+            GetComponent<Rigidbody2D>().velocity = (newPos + _initPos - oldPos) / Time.fixedDeltaTime;
+            //Debug.Log("New Pos: " + (newPos + _initPos) + "\nOld Pos: " + oldPos + "\nDiff Pos: " + (newPos + _initPos - oldPos) + "\nVelo: " + GetComponent<Rigidbody2D>().velocity);
+            GetComponent<Rigidbody2D>().MovePosition(newPos + _initPos);
         }
 
         if(_timeSinceReleaseInSec > 10f)

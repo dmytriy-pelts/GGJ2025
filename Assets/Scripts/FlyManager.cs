@@ -1,8 +1,12 @@
 using GumFly.ScriptableObjects;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FlyManager : MonoBehaviour
 { 
+    [SerializeField]
+    public UnityAction AllFliesDead;
     [SerializeField]
     private Level levelConfig;
     [SerializeField]
@@ -12,27 +16,45 @@ public class FlyManager : MonoBehaviour
     [SerializeField]
     private float _inwardOffsetY = 200.0f;
 
-    private int flyTotal = 0;
+    private List<FlyBehaviour> _flyList;
 
     private void Start()
     {
         for(int flyTypeIndex = 0; flyTypeIndex < levelConfig.flyTypesInLevel.Length; flyTypeIndex++)
         {
             FlyAmount flyType = levelConfig.flyTypesInLevel[flyTypeIndex];
-            flyTotal += flyType.amount;
-
             for(int flyIndex = 0; flyIndex < flyType.amount; flyIndex++)
             {
-                SpawnFlyRandomly(flyType.reference);
+                _flyList.Add(SpawnFlyRandomly(flyType.reference));
             }
         }
     }
 
-    private void SpawnFlyRandomly(GameObject prefab)
+    private void Update()
+    {
+        bool isAllDead = true;
+        foreach(FlyBehaviour flyBehaviour in _flyList)
+        {
+            if(!flyBehaviour.IsDead)
+            {
+                isAllDead = false;
+                break;
+            }
+        }
+
+        if(isAllDead)
+        {
+            AllFliesDead.Invoke();
+        }
+    }
+
+    private FlyBehaviour SpawnFlyRandomly(GameObject prefab)
     {
         Vector2 randomPos = getRandomPositionInBounds(_spawnArea.rect);
         GameObject obj = Instantiate(prefab, randomPos, Quaternion.identity);
         obj.transform.SetParent(this.transform);
+
+        return obj.GetComponent<FlyBehaviour>();
     }
 
     private Vector2 getRandomPositionInBounds(Rect bound)
@@ -40,7 +62,7 @@ public class FlyManager : MonoBehaviour
         Vector2 result = Vector2.zero;
         result.x = Random.Range(bound.xMin + _inwardOffsetX, bound.xMax - _inwardOffsetX);
         result.y = Random.Range(bound.yMin + _inwardOffsetY, bound.yMax - _inwardOffsetY);
-        result += bound.position;
-        return result;
+
+        return _spawnArea.TransformPoint(result);
     }
 }

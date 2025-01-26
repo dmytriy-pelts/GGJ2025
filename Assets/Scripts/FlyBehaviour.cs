@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using GumFly.ScriptableObjects;
 using System.Collections;
 using UnityEngine;
@@ -34,7 +35,7 @@ public class FlyBehaviour : MonoBehaviour
     private float _evasionTotalCooldown = 1.0f;
     private float _evasionCooldown = 1.0f;
 
-    private bool _isDead = false;
+    public bool IsDead = false;
     public float WeightAccumulated = 0.0f;
     public float WeightThreshold = 0.0f;
 
@@ -60,14 +61,13 @@ public class FlyBehaviour : MonoBehaviour
     {
         Vector3 newPos = _anchorPos;
         newPos.x = _anchorPos.x + (_flightRadius * dir);
-
-        Debug.Log(newPos);
+        
         return newPos;
     }
 
     void Update()
     {
-        if(!_isDead)
+        if(!IsDead)
         {
             float time = Time.time;
         Vector2 currentPos = this.transform.position;
@@ -97,7 +97,6 @@ public class FlyBehaviour : MonoBehaviour
         }
 
         this.transform.position = Vector2.MoveTowards(currentPos, nextPos, _flightSpeed *  speedScale);
-
         _evasionCooldown -= Time.deltaTime;
         }
     }
@@ -112,6 +111,7 @@ public class FlyBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if(!other.CompareTag("Bubble")) { return; }
         if (!_isAbleToEvade || _evasionCooldown > 0.0f) { return; }
 
         _isEvading = true;
@@ -127,28 +127,51 @@ public class FlyBehaviour : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other) 
+    private async void OnCollisionEnter2D(Collision2D other) 
     {
+        Debug.Log("Bubble detected! \t" + IsDead );
         if(other.collider.CompareTag("Bubble"))
         {
             float weight = other.collider.GetComponent<BubbleBehaviour>().Weight;
             WeightAccumulated += weight;
 
-            _isDead = WeightAccumulated >= WeightThreshold;
+            IsDead = WeightAccumulated >= WeightThreshold;
+            
+            if(IsDead)
+            {
+                Vector2 diff = this.transform.position - other.transform.position;
+                Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+                rigid.bodyType = RigidbodyType2D.Dynamic;
+                rigid.AddForce(diff.normalized * 30000);
+                await UniTask.DelayFrame(2, PlayerLoopTiming.FixedUpdate);
+                rigid.mass = 100;
+                rigid.gravityScale = 10f;       
+                
+                this.enabled = false;
+            }
         }
         else if (other.collider.CompareTag("Fly"))
         {
+            if(other.collider.GetComponent<FlyBehaviour>().IsDead == false) { return; }
+
             float weight = other.collider.GetComponent<FlyBehaviour>().WeightAccumulated;
             WeightAccumulated += weight;
 
-            _isDead = WeightAccumulated >= WeightThreshold;
-        }
+            IsDead = WeightAccumulated >= WeightThreshold;
 
-        if(_isDead)
+            if(IsDead)
             {
-                // Vector2 diff = other
-                //GetComponent<Rigidbody2D>().AddForce();
+                Vector2 diff = this.transform.position - other.transform.position;
+                Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+                rigid.bodyType = RigidbodyType2D.Dynamic;
+                rigid.AddForce(diff.normalized * 20000);
+                await UniTask.DelayFrame(2, PlayerLoopTiming.FixedUpdate);
+                rigid.mass = 100;
+                rigid.gravityScale = 10f;
+
+                this.enabled = false;
             }
+        }
     }
 
     private void SetFacing()
@@ -160,7 +183,7 @@ public class FlyBehaviour : MonoBehaviour
 
     private IEnumerator WingFlapping()
     {
-        while (!_isDead)
+        while (!IsDead)
         {
             yield return new WaitForSeconds(_wingFlapDurationInSec);
 
@@ -178,5 +201,8 @@ public class FlyBehaviour : MonoBehaviour
         {
             Gizmos.DrawSphere(_evadingPos, 10f);
         }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(_anchorPos, Vector3.one * 30);
     }
 }
