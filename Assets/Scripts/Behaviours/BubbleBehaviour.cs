@@ -24,7 +24,7 @@ public class BubbleBehaviour : MonoBehaviour
     private void OnEnable() 
     {
         _initPos = this.transform.position;
-        _rigidbody.GetComponent<Rigidbody2D>();
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void OnCollisionEnter2D(Collision2D other) 
