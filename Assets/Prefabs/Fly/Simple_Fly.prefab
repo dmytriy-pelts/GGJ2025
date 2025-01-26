@@ -284,6 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flyProperty: {fileID: 11400000, guid: b06b8d4df1cefba4bbc9792996c0c2a8, type: 2}
   _wingPivot: {fileID: 759796908955534102}
+  GumRef: {fileID: 0}
   _wingFlapDurationInSec: 0.05
   _flightRadius: 300
   _maxFlightHeight: 240
@@ -577,7 +578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &759796908955534102
 Transform:
   m_ObjectHideFlags: 0
@@ -761,7 +762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1560471015144803086
 Transform:
   m_ObjectHideFlags: 0
