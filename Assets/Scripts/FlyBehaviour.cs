@@ -37,7 +37,6 @@ public class FlyBehaviour : MonoBehaviour
 
     public bool IsDead = false;
     public float WeightAccumulated = 0.0f;
-    public float WeightThreshold = 0.0f;
 
     void Start()
     {
@@ -144,7 +143,7 @@ public class FlyBehaviour : MonoBehaviour
 
             float weight = bubbleBehaviour.Weight;
             WeightAccumulated += weight;
-            IsDead = WeightAccumulated >= WeightThreshold;
+            IsDead = WeightAccumulated >= _flyProperty.WeightThreshold;
             
             if(IsDead)
             {
@@ -172,7 +171,7 @@ public class FlyBehaviour : MonoBehaviour
             gumColor = otherFly.GumRef.GetComponent<SpriteRenderer>().color;
             float weight = otherFly.WeightAccumulated;
             WeightAccumulated += weight;
-            IsDead = WeightAccumulated >= WeightThreshold;
+            IsDead = WeightAccumulated >= _flyProperty.WeightThreshold;
 
             if(IsDead)
             {
