@@ -55,22 +55,14 @@ namespace GumFly.UI
 
         private void Start()
         {
+            GameManager.Instance.StateChanged.AddListener(OnStateChanged);
             _canvasGroup = GetComponent<CanvasGroup>();
             _canvasGroup.alpha = 0.5f;
         }
 
-        private void OnEnable()
-        {
-            GameManager.Instance.StateChanged.AddListener(OnStateChanged);
-        }
-
-        private void OnDisable()
-        {
-            GameManager.Instance.StateChanged.RemoveListener(OnStateChanged);
-        }
-
         private void OnStateChanged(StateChangeEvent e)
         {
+            Debug.Log(e.NewState);
             _canvasGroup.alpha = e.NewState == GameState.PickingGum ? 1.0f : 0.5f;
         }
 

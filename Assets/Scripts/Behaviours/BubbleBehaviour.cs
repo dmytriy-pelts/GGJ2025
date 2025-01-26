@@ -34,6 +34,12 @@ public class BubbleBehaviour : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    public void Release()
+    {
+        _initPos = this.transform.position;
+        IsReleased = true;
+    }
+
     private void FixedUpdate()
     {
         if(IsReleased && !_isPopped)
