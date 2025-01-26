@@ -6,6 +6,7 @@ using GumFly.UI.Gases;
 using GumFly.Utils;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace GumFly.UI
 {
@@ -27,6 +28,8 @@ namespace GumFly.UI
         [SerializeField]
         private AudioClip _noGasClip;
 
+        [SerializeField]
+        public UnityEvent OnBurst;
 
         private Inventory _inventory;
         private GumGasMixture _mixture;
@@ -67,6 +70,7 @@ namespace GumFly.UI
                     container.interactable = true;
                 }
 
+                _straining = 0.0f;
                 _mixture = GameManager.Instance.CurrentMixture;
             } else if (e.OldState == GameState.Aiming)
             {
@@ -93,6 +97,7 @@ namespace GumFly.UI
             _pulling = null;
         }
 
+        private float _straining = 0.0f;
 
         private void Update()
         {
@@ -102,6 +107,17 @@ namespace GumFly.UI
             _mixture.Add(_pulling.Gas, amount);
             
             _audioSource.clip = amount > 0.0f ? _gasClip : _noGasClip;
+
+            if (_mixture.RemainingCapacity < 0.00001f)
+            {
+                _straining += Time.deltaTime;
+            }
+
+            if (_straining > 0.05f)
+            {
+                OnBurst.Invoke();
+                _straining = 0.0f;
+            } 
         }
     }
 }

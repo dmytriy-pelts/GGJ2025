@@ -75,14 +75,14 @@ namespace GumFly.UI
             }
 
             var gum = await _selectedGum.FirstAsync(it => it != null, cancellation);
+            _selectedGum.Value = null;
             
-            await UniTask.Delay(1000, cancellationToken: cancellation);
-
             foreach (var package in _gumPackages)
             {
                 package.enabled = false;
             }
-
+            
+            await UniTask.Delay(1000, cancellationToken: cancellation);
             return gum;
         }
     }

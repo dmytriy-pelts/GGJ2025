@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks.Linq;
 using GumFly.Domain;
 using GumFly.Utils;
+using System;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -9,13 +10,21 @@ using UnityEngine.EventSystems;
 
 namespace GumFly.UI
 {
+    enum Signal
+    {
+        None,
+        Click,
+        Burst,
+        Gulp
+    }
+    
     public class AimManager : MonoSingleton<AimManager>
     {
         [SerializeField]
         private BubbleFlightPath _flightController;
-
-        private AsyncReactiveProperty<AsyncUnit>
-            _clickSignals = new AsyncReactiveProperty<AsyncUnit>(AsyncUnit.Default);
+        
+        private AsyncReactiveProperty<Signal>
+            _clickSignals = new AsyncReactiveProperty<Signal>(Signal.None);
 
         public async UniTask WaitUntilBubblesAreGone()
         {
@@ -33,6 +42,13 @@ namespace GumFly.UI
         private void Start()
         {
             _flightController.gameObject.SetActive(false);
+            
+            GasManager.Instance.OnBurst.AddListener(OnBurst);
+        }
+
+        private void OnBurst()
+        {
+            _clickSignals.Value = Signal.Burst;
         }
 
         public async UniTask AimAsync(GumGasMixture mixture, CancellationToken cancellation)
@@ -40,20 +56,43 @@ namespace GumFly.UI
             _flightController.gameObject.SetActive(true);
 
             // Placeholder to detect click
-            await _clickSignals.Skip(1).FirstAsync(cancellationToken: cancellation);
-            
-            _flightController.Shoot();
+            var evt = await _clickSignals.Skip(1).FirstAsync(cancellationToken: cancellation);
 
-            await UniTask.Delay(1000);
+            switch (evt)
+            {
+                case Signal.None:
+                    Debug.LogWarning("Got none signal?!");
+                    break;
+                case Signal.Click:
+                    _flightController.Shoot();
+                    break;
+                case Signal.Burst:
+                    SoundManager.Instance.PlaySplat(transform.position);
+                    break;
+                case Signal.Gulp:
+                    SoundManager.Instance.PlayGulp();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
 
             _flightController.gameObject.SetActive(false);
+            await UniTask.Delay(1000);
         }
 
         private void Update()
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
-                _clickSignals.Value = AsyncUnit.Default;
+                if (GameManager.Instance.CurrentMixture.GasAmounts.Count == 0)
+                {
+                    _clickSignals.Value = Signal.Gulp;
+                }
+                else
+                {
+                    _clickSignals.Value = Signal.Click;
+                }
             }
         }
     }
