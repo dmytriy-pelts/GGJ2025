@@ -5,7 +5,6 @@ using GumFly.UI;
 using GumFly.Utils;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -60,7 +59,7 @@ namespace GumFly
             GumManager.Instance.Initialize(_inventoryInstance);
             GasManager.Instance.Initialize(_inventoryInstance);
 
-                
+
             GameLoop().Forget();
         }
 
@@ -85,40 +84,42 @@ namespace GumFly
         private async UniTask GameLoop()
         {
             await UniTask.Delay(2000);
-            
-            FlyManager.Instance.AllFliesDead.AddListener(() => Debug.Log("All Flies Dead"));
+            float startTime = Time.time;
+
+            FlyManager.Instance.AllFliesDead.AddListener(() =>
+            {
+                EndIt(startTime).Forget();
+            });
             var cancellation = FlyManager.Instance.AllFliesDead
                 .OnInvokeAsync(gameObject.GetCancellationTokenOnDestroy())
                 .ToCancellationToken();
 
-            float startTime = Time.time;
-            
+
             while (_inventoryInstance.HasAnyGumsLeft
                    && _inventoryInstance.HasAnyGasLeft
                    && FlyManager.Instance.RemainingFlyCount > 0 && !_gameOver)
             {
-                try
-                {
-                    // 1st step -- pick a gum
-                    ChangeState(GameState.PickingGum);
-                    var gum = await GumManager.Instance.PickGumAsync(cancellation);
-                    CurrentMixture.Gum = gum;
+                // 1st step -- pick a gum
+                ChangeState(GameState.PickingGum);
+                var gum = await GumManager.Instance.PickGumAsync(cancellation);
+                CurrentMixture.Gum = gum;
 
-                    // 2nd step -- do the rhythm
-                    ChangeState(GameState.Chewing);
-                    float capacity = await RhythmManager.Instance.ChewAsync(gum, cancellation);
+                // 2nd step -- do the rhythm
+                ChangeState(GameState.Chewing);
+                float capacity = await RhythmManager.Instance.ChewAsync(gum, cancellation);
 
-                    // 3rd step -- aim and load
-                    ChangeState(GameState.Aiming);
-                    await AimManager.Instance.AimAsync(CurrentMixture, cancellation);
+                // 3rd step -- aim and load
+                ChangeState(GameState.Aiming);
+                await AimManager.Instance.AimAsync(CurrentMixture, cancellation);
 
-                    CurrentMixture = new GumGasMixture();
-                }
-                catch (OperationCanceledException)
-                {
-                }
+                CurrentMixture = new GumGasMixture();
             }
 
+            EndIt(startTime).Forget();
+        }
+
+        private async UniTask EndIt(float startTime)
+        {
             float endTime = Time.time;
             ChangeState(GameState.Finished);
 
