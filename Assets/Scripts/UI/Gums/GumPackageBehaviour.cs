@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace GumFly.UI.Gums
 {
@@ -16,6 +17,9 @@ namespace GumFly.UI.Gums
 
         [SerializeField]
         private RectTransform _gumContainer;
+
+        [SerializeField]
+        private Image _sprite;
 
         [SerializeField]
         private Button _button;
@@ -40,13 +44,16 @@ namespace GumFly.UI.Gums
             _package = package;
 
             _gumContainer.FillWithPrefabs(_gumBehaviourPrefab, package.GumType, package.Count);
+            _sprite.sprite = package.GumType.Sprite;
+            
+            transform.localRotation = Quaternion.Euler(0.0f, 0.0f, Random.Range(-10.0f, 10.0f));
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (_package.TryTakeGum(out var gum))
             {
-                _gumContainer.GetChild(_package.Count)
+                _gumContainer.GetChild(0)
                     .GetComponent<GumBehaviour>()
                     .Consume();
                 

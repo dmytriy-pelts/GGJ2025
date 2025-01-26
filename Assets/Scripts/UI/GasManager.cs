@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace GumFly.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class GasManager : MonoSingleton<GasManager>
     {
         [SerializeField]
@@ -32,6 +33,7 @@ namespace GumFly.UI
         
         private GasContainer _pulling;
         private GasContainerBehaviour[] _containers;
+        private CanvasGroup _canvasGroup;
 
         public void Initialize(Inventory inventory)
         {
@@ -49,6 +51,8 @@ namespace GumFly.UI
 
         private void Start()
         {
+            _canvasGroup = GetComponent<CanvasGroup>();
+            _canvasGroup.alpha = 0.5f;
         }
 
         private void OnEnable()
@@ -63,6 +67,7 @@ namespace GumFly.UI
 
         private void OnStateChanged(StateChangeEvent e)
         {
+            _canvasGroup.alpha = e.NewState == GameState.Aiming ? 1.0f : 0.5f;
             if (e.NewState == GameState.Aiming)
             {
                 foreach (var container in _containers)

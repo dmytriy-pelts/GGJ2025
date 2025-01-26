@@ -2,6 +2,8 @@
 using GumFly.ScriptableObjects;
 using GumFly.UI.ChewChew;
 using GumFly.Utils;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
@@ -31,6 +33,18 @@ namespace GumFly.UI
 
         private void OnJudgementMade(RhythmJudgementEvent e)
         {
+            LSequence.Create()
+                .Append(
+                    LMotion.Create(Vector3.one, Vector3.one * 0.6f, 0.1f)
+                        .WithEase(Ease.OutQuart).BindToLocalScale(Cursor)
+                )
+                .Append(
+                    LMotion.Create(Vector3.one * 0.6f, Vector3.one, 0.3f)
+                        .WithEase(Ease.InQuad).BindToLocalScale(Cursor)
+                )
+                .Run();
+            
+            
             float factor = e.Judgement switch
             {
                 RhythmJudgement.Perfect => 1.0f,
