@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class FlyManager : MonoSingleton<FlyManager>
 { 
     [SerializeField]
-    public UnityAction AllFliesDead;
+    public UnityEvent AllFliesDead;
     [SerializeField]
     private Level levelConfig;
     [SerializeField]
