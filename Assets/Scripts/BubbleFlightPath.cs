@@ -60,7 +60,6 @@ public class BubbleFlightPath : MonoBehaviour
         _lineRenderer = GetComponent<LineRenderer>();
         _lineRenderer.positionCount = points.Length;
         _lineRenderer.SetPositions(points);
-        //_bubbleRef.gameObject.SetActive(false);
         _bubbleFillScale = _bubblePrefab.localScale.x;
 
         _maxBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
@@ -85,12 +84,9 @@ public class BubbleFlightPath : MonoBehaviour
                 InstantiateBubble();
             }
 
-            //_isBubbleFlying = true;
-            _releasePoint = this.transform.position;
-
             _bubbleRef.Mixture = _gameManager.CurrentMixture;
             _bubbleRef.PathLength = _pathLength;
-            _bubbleRef.Weight = 10; //_gameManager.CurrentMixture.Gum.Weight;
+            _bubbleRef.Weight = _gameManager.CurrentMixture.Gum.Weight;
             _bubbleRef.Velocity = _finalVelocity;
             _bubbleRef.GravityDecay = _finalGravityDecay;
             _bubbleRef.BubbleDistancePerSec = _bubbleDefaultDistancePerSec;
