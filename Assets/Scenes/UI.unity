@@ -1376,6 +1376,9 @@ MonoBehaviour:
   _audioSource: {fileID: 611123090}
   _gasClip: {fileID: 8300000, guid: 16acdbafc3569c54083dcc0d8e9ae493, type: 3}
   _noGasClip: {fileID: 8300000, guid: bfcb616a1c8852b4097c4d824a0f16fd, type: 3}
+  OnBurst:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!82 &611123090
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2186,7 +2189,7 @@ PlayableDirector:
   m_GameObject: {fileID: 974564427}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: f57785d9f29dac8459cf42d4018d3dfb, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: a958cc5572dabd442a83ba764c42e7b4, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 0
@@ -2196,6 +2199,10 @@ PlayableDirector:
     value: {fileID: 974564434}
   - key: {fileID: -4011151397599441376, guid: f57785d9f29dac8459cf42d4018d3dfb, type: 2}
     value: {fileID: 974564434}
+  - key: {fileID: 5022709488901836711, guid: 6e423f5242311db409f086f6c75162ac, type: 2}
+    value: {fileID: 974564434}
+  - key: {fileID: 5022709488901836711, guid: a958cc5572dabd442a83ba764c42e7b4, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!82 &974564434
